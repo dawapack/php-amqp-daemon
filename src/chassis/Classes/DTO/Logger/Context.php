@@ -15,5 +15,4 @@ class Context extends DataTransferObject
 
     /* @var \DaWaPack\Chassis\Classes\DTO\Logger\ContextResponse */
     public array $response;
-
 }

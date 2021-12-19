@@ -15,5 +15,4 @@ class Application extends DataTransferObject
 
     // Application type
     public string $type;
-
 }
