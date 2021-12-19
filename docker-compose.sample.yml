@@ -1,0 +1,21 @@
+version: '3.2'
+services:
+  dawapack_amqp_daemon:
+    image: dawapack:0.1-amqp-daemon
+    container_name: dawapack_amqp_daemon
+    build:
+      dockerfile: Dockerfile
+      context: ./var/docker
+    stdin_open: true
+    tty: true
+    environment:
+      ORIGIN: "eu"
+      REGION: "eu-bucharest-1"
+      APPLICATION_SYSTEM_NAME: "php_amqp_daemon"
+      APPLICATION_ENVIRONMENT: "development"
+      APPLICATION_TYPE: "daemon"
+      DEFAULT_LOG_COMPONENT: "application_unhandled_exception"
+    volumes:
+      - type: bind
+        source: ./src
+        target: /var/www

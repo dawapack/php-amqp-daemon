@@ -1,0 +1,45 @@
+{
+  "name": "dawapack/php-amqp-daemon",
+  "description": "PHP AMQP Workers - or how to publish and consume RabbitMQ jobs in a multi-threading manner without such memory leaks",
+  "keywords": ["dawapack", "php", "amqp", "daemon"],
+  "license": "MIT",
+  "type": "project",
+  "require": {
+    "php": "^7.4",
+    "monolog/monolog": "^2.3.0",
+    "spatie/data-transfer-object": "^1.14.0",
+    "vlucas/phpdotenv": "^5.4.0"
+  },
+  "require-dev": {
+    "ext-simplexml": "*",
+    "phpunit/phpunit": "^9.5.10"
+  },
+  "autoload": {
+    "files": [
+      "chassis/Helpers/collections.php",
+      "chassis/Helpers/general.php"
+    ],
+    "psr-4": {
+      "DaWaPack\\Daemon\\": "app/",
+      "DaWaPack\\Bootstrap\\": "bootstrap/",
+      "DaWaPack\\Chassis\\": "chassis/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DaWaPack\\Daemon\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "scripts": {
+    "post-root-package-install": [
+      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+    ]
+  }
+}
