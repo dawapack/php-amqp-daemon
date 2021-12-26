@@ -4,7 +4,6 @@ namespace DaWaPack\Bootstrap;
 
 use DaWaPack\Chassis\Application;
 use DaWaPack\Chassis\Bootstrap\LoadEnvironmentVariables;
-use DaWaPack\Chassis\Classes\Logger\LoggerFactory;
 use function DaWaPack\Chassis\Helpers\env;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -18,8 +17,5 @@ date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 // Load environment variables
 (new LoadEnvironmentVariables($basePath))->bootstrap();
 
-// Create a log channel
-$logger = (new LoggerFactory())($basePath);
-
 // Create & return application instance
-return new Application($logger, $basePath);
+return new Application($basePath);

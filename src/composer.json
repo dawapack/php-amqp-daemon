@@ -6,6 +6,7 @@
   "type": "project",
   "require": {
     "php": "^7.4",
+    "league/container": "^4.2",
     "monolog/monolog": "^2.3.0",
     "spatie/data-transfer-object": "^1.14.0",
     "vlucas/phpdotenv": "^5.4.0"
