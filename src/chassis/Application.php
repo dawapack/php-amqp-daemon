@@ -2,65 +2,46 @@
 
 namespace DaWaPack\Chassis;
 
+use DaWaPack\Chassis\Classes\Logger\LoggerFactory;
 use DaWaPack\Chassis\Support\ErrorsHandler;
+use League\Container\Container;
+use League\Container\ReflectionContainer;
 use Psr\Log\LoggerInterface;
 
-class Application
+class Application extends Container
 {
 
     use ErrorsHandler;
 
-    /**
-     * @var string
-     */
     private string $basePath;
 
-    /**
-     * @var LoggerInterface
-     */
-    private LoggerInterface $logger;
-
-    /**
-     * Application constructor.
-     *
-     * @param LoggerInterface $logger
-     * @param string|null $basePath
-     */
-    public function __construct(LoggerInterface $logger, string $basePath = null)
+    public function __construct(string $basePath = null)
     {
-        $this->logger = $logger;
+        parent::__construct();
         $this->basePath = $basePath;
 
+        $this->enableAutoWiring();
         $this->bootstrapContainer();
         $this->registerErrorHandling();
     }
 
-    /**
-     * @return void
-     */
     protected function bootstrapContainer(): void
     {
-        // TODO: implement container stuffs here
+        $this->add(LoggerInterface::class, new LoggerFactory($this->basePath));
     }
 
-    /**
-     * Set logger interface
-     *
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger): void
+    private function enableAutoWiring(): void
     {
-        $this->logger = $logger;
+        $this->delegate(new ReflectionContainer(true));
     }
 
     /**
      * Single entry point of application
-     *
-     * @return void
      */
     public function run(): void
     {
-        $this->logger->info(
+        $logger = $this->get(LoggerInterface::class);
+        $logger->info(
             "Message", ["component" => "blabla"]
         );
         do {
