@@ -48,7 +48,7 @@ COPY container/usr/ /usr/
 RUN chmod 755 /usr/bin/entrypoint.sh
 
 # Set the work directory
-WORKDIR /var/www/boot
+WORKDIR /var/www
 
 ## switch to user dawapack
 USER 1000:1000
