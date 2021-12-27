@@ -18,16 +18,18 @@ class LoggerFactory
      */
     private string $basePath;
 
+    public function __construct(string $basePath)
+    {
+        $this->basePath = $basePath;
+    }
+
     /**
      * Nobody cares about implementation - we just need something to use to log things
      *
-     * @param string $basePath
-     *
      * @return LoggerInterface
      */
-    public function __invoke(string $basePath): LoggerInterface
+    public function __invoke(): LoggerInterface
     {
-        $this->basePath = $basePath;
         // Create a logger instance
         $logger = new Logger(env('APP_SYSNAME', 'unknown'));
         // Add a custom handler

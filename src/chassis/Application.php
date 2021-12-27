@@ -2,48 +2,30 @@
 
 namespace DaWaPack\Chassis;
 
+use DaWaPack\Chassis\Classes\Logger\LoggerFactory;
 use DaWaPack\Chassis\Concerns\ErrorsHandler;
 use DaWaPack\Chassis\Concerns\Runner;
+use League\Container\Container;
+use League\Container\ReflectionContainer;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-class Application
+class Application extends Container
 {
 
-    /**
-     * Traits
-     */
     use ErrorsHandler;
     use Runner;
 
-    /**
-     * @var string
-     */
     private string $basePath;
 
-    /**
-     * @var LoggerInterface
-     */
-    private LoggerInterface $logger;
-
-    /**
-     * @var string
-     */
     private string $runnerType;
 
-    /**
-     * Application constructor.
-     *
-     * @param LoggerInterface $logger
-     * @param string|null $basePath
-     *
-     * @throws Throwable
-     */
-    public function __construct(LoggerInterface $logger, string $basePath = null)
+    public function __construct(string $basePath = null)
     {
-        $this->logger = $logger;
+        parent::__construct();
         $this->basePath = $basePath;
 
+        $this->enableAutoWiring();
         $this->bootstrapContainer();
         $this->registerErrorHandling();
         $this->registerRunnerType();
@@ -82,31 +64,28 @@ class Application
         return \PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg';
     }
 
-    /**
-     * @return void
-     */
     protected function bootstrapContainer(): void
     {
-        // TODO: implement container stuffs here
+        $this->add(LoggerInterface::class, new LoggerFactory($this->basePath));
+    }
+
+    private function enableAutoWiring(): void
+    {
+        $this->delegate(new ReflectionContainer(true));
     }
 
     /**
-     * Set logger interface
-     *
-     * @param LoggerInterface $logger
+     * Single entry point of application
      */
-    public function setLogger(LoggerInterface $logger): void
+    public function run(): void
     {
-        $this->logger = $logger;
-    }
+        $logger = $this->get(LoggerInterface::class);
+        $logger->info(
+            "Message", ["component" => "blabla"]
+        );
+        do {
+            sleep(600);
+        } while (true);
 
-    /**
-     * Get the logger
-     *
-     * @return LoggerInterface
-     */
-    public function getLogger(): LoggerInterface
-    {
-        return $this->logger;
     }
 }
