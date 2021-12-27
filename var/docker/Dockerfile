@@ -7,7 +7,7 @@ RUN adduser -s /bin/bash -u 1000 -G dawapack -s /sbin/nologin -D dawapack
 # Container timezone will be UTC
 RUN echo "UTC" > /etc/timezone
 # Add requirements
-RUN apk add --no-cache bash bash-doc bash-completion zip unzip curl openssh supervisor
+RUN apk add --no-cache bash bash-doc bash-completion zip unzip curl openssh supervisor htop
 
 # Add personals
 RUN apk add --no-cache vim

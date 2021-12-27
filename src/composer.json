@@ -5,13 +5,15 @@
   "license": "MIT",
   "type": "project",
   "require": {
+    "ext-simplexml": "*",
+    "ext-parallel": "*",
+    "ext-pcntl": "*",
     "php": "^7.4",
     "monolog/monolog": "^2.3.0",
-    "spatie/data-transfer-object": "^1.14.0",
+    "spatie/data-transfer-object": "^2.8.0",
     "vlucas/phpdotenv": "^5.4.0"
   },
   "require-dev": {
-    "ext-simplexml": "*",
     "phpunit/phpunit": "^9.5.10"
   },
   "autoload": {
@@ -20,7 +22,7 @@
       "chassis/Helpers/general.php"
     ],
     "psr-4": {
-      "DaWaPack\\Daemon\\": "app/",
+      "DaWaPack\\": "app/",
       "DaWaPack\\Bootstrap\\": "bootstrap/",
       "DaWaPack\\Chassis\\": "chassis/"
     }

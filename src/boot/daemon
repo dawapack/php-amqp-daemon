@@ -1,9 +1,12 @@
+#!/usr/bin/env php
 <?php
-declare(strict_types = 1);
 
-namespace DaWaPack\Boot;
+declare(strict_types=1);
 
 use DaWaPack\Chassis\Application;
+use DaWaPack\Classes\Daemon\Kernel;
+
+define('RUNNER_TYPE', 'daemon');
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +18,8 @@ $app = require __DIR__.'/../bootstrap/app.php';
 
 /*
 |--------------------------------------------------------------------------
-| Run The Application
+| Create the kernel instance in the runner context type
 |--------------------------------------------------------------------------
 */
-$app->run();
+$kernel = new Kernel($app);
+$kernel->boot();

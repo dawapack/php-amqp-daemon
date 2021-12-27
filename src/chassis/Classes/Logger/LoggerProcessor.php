@@ -59,7 +59,7 @@ class LoggerProcessor
         $defaultRecord["application"] = [
             "name" => env("APPLICATION_SYSTEM_NAME", null),
             "environment" => env("APPLICATION_ENVIRONMENT", null),
-            "type" => env("APPLICATION_TYPE", null)
+            "type" => RUNNER_TYPE
         ];
         $defaultRecord["application"]["name"] ?? env("APP_SYSNAME", "unknown");
         $defaultRecord["application"]["environment"] ?? env("APP_ENV", null);
@@ -96,11 +96,16 @@ class LoggerProcessor
         if (isset($loggerRecord["context"]["component"])) {
             $this->record->component = $loggerRecord["context"]["component"];
         }
+        unset($loggerRecord["context"]["component"]);
 
         // extra from context/extra
         if (isset($loggerRecord["context"]["extra"])) {
             $this->record->extra = $loggerRecord["context"]["extra"];
         }
+        unset($loggerRecord["context"]["extra"]);
+
+        // Copy context
+        $this->record->context = $loggerRecord["context"];
 
         // context/error
         if (

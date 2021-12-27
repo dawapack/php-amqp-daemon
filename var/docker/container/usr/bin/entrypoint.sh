@@ -8,4 +8,4 @@ unlink /var/www/logs/app.log
 ln -s /proc/1/fd/0 /var/www/logs/app.log
 
 # Start supervisord
-supervisord --configuration /etc/supervisor/supervisord.conf
+exec supervisord --configuration /etc/supervisor/supervisord.conf

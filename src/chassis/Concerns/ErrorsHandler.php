@@ -1,9 +1,8 @@
 <?php
 
-namespace DaWaPack\Chassis\Support;
+namespace DaWaPack\Chassis\Concerns;
 
 use DaWaPack\Chassis\Exceptions\ApplicationErrorException;
-use Psr\Log\LoggerInterface;
 use Throwable;
 
 trait ErrorsHandler
