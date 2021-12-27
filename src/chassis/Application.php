@@ -8,7 +8,6 @@ use DaWaPack\Chassis\Concerns\Runner;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
 use Psr\Log\LoggerInterface;
-use Throwable;
 
 class Application extends Container
 {
@@ -72,20 +71,5 @@ class Application extends Container
     private function enableAutoWiring(): void
     {
         $this->delegate(new ReflectionContainer(true));
-    }
-
-    /**
-     * Single entry point of application
-     */
-    public function run(): void
-    {
-        $logger = $this->get(LoggerInterface::class);
-        $logger->info(
-            "Message", ["component" => "blabla"]
-        );
-        do {
-            sleep(600);
-        } while (true);
-
     }
 }
