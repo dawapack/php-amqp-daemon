@@ -51,7 +51,7 @@ class Kernel extends KernelBase
     public function boot(): void
     {
         // Start threads
-        echo "Starting daemon kernel..." . PHP_EOL;
+
         // Loop until stop requested
         do {
             // Run scaling

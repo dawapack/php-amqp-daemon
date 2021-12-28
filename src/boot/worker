@@ -15,6 +15,9 @@ define('RUNNER_TYPE', 'worker');
 /** @var Application $app */
 $app = require __DIR__ . '/../bootstrap/app.php';
 
+// Add specific configuration
+var_dump($app->config('threads.infrastructure'));
+
 /*
 |--------------------------------------------------------------------------
 | Create the kernel instance in the runner context type

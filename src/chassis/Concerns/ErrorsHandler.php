@@ -68,9 +68,7 @@ trait ErrorsHandler
      */
     protected function handleException(Throwable $reason)
     {
-        /* @var LoggerInterface $logger */
-        $logger = $this->get(LoggerInterface::class);
-        $logger->alert(
+        $this->logger()->alert(
             "Application unhandled exception",
             [
                 "component" => "application_unhandled_exception",

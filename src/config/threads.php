@@ -1,5 +1,7 @@
 <?php
 
+namespace DaWaPack\Config;
+
 return [
 
     /*

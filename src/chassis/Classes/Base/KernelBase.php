@@ -48,7 +48,7 @@ abstract class KernelBase implements KernelInterface
      */
     final public function logger(): LoggerInterface
     {
-        return $this->app->get(LoggerInterface::class);
+        return $this->app->logger();
     }
 
     final protected function bootstrapSignals(): void
