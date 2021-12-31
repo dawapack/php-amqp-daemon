@@ -19,7 +19,9 @@ interface KernelInterface
     public function logger(): LoggerInterface;
 
     /**
+     * @param string|null $threadId
+     *
      * @return void
      */
-    public function boot(): void;
+    public function boot(?string $threadId = null): void;
 }

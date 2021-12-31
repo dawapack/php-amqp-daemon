@@ -95,6 +95,7 @@ class Configuration implements ConfigurationInterface
         if ($this->configuration->exists($fileName)) {
             return;
         }
+        $reason = null;
         try {
             $schemas = $this->getSchema($fileName)->getMethod('getSchema')->invoke(null);
             $definitions = $this->getDefinitions($fileName);
@@ -103,18 +104,15 @@ class Configuration implements ConfigurationInterface
             // Add definitions
             $this->configuration->merge([$fileName => $definitions]);
         } catch (ReflectionException $reason) {
-            $this->logger->error(
-                $reason->getMessage(),
-                [
-                    "component" => self::LOGGER_COMPONENT_PREFIX . "_error",
-                    "error" => $reason
-                ]
-            );
+            // fault tolerant
         } catch (ConfigurationException $reason) {
-            $this->logger->error(
+            // fault tolerant
+        }
+        if (!is_null($reason)) {
+            $this->logger->warning(
                 $reason->getMessage(),
                 [
-                    "component" => self::LOGGER_COMPONENT_PREFIX . "_error",
+                    "component" => self::LOGGER_COMPONENT_PREFIX . "_exception",
                     "error" => $reason
                 ]
             );
@@ -136,23 +134,27 @@ class Configuration implements ConfigurationInterface
         if (!file_exists($schemaFilePath)) {
             throw new ConfigurationException("schema for alias '$shortClassName' not found");
         }
-        return new ReflectionClass($this->extractNamespace($schemaFilePath, $shortClassName));
+        return new ReflectionClass($this->getClassWithNamespace($schemaFilePath));
     }
 
     /**
      * @param string $filePath
-     * @param string $shortClassName
      *
      * @return string
      * @throws ConfigurationException
      */
-    private function extractNamespace(string $filePath, string $shortClassName): string
+    private function getClassWithNamespace(string $filePath): string
     {
         $content = file_get_contents($filePath);
-        if (preg_match('#(namespace)(\\s+)([A-Za-z0-9\\\\]+?)(\\s*);#sm', $content, $matches) <= 0) {
-            throw new ConfigurationException("namespace in '$shortClassName' not found");
+        // get namespace
+        if (preg_match('/(namespace)(\\s+)([a-z0-9\\\]+?)(\\s*);/iu', $content, $namespace) <= 0) {
+            throw new ConfigurationException("namespace not found");
         }
-        return $matches[3] . '\\' . $shortClassName;
+        // Get class name (\\s+)?(class|interface|trait)(\\s+)(\\w+)(\\s+)?
+        if (preg_match('/(\\s+)?(class|interface|trait)(\\s+)(\\w+)(\\s+)?/iu', $content, $shortClassName) <= 0) {
+            throw new ConfigurationException("short class name not found");
+        }
+        return $namespace[3] . '\\' . $shortClassName[4];
     }
 
     /**

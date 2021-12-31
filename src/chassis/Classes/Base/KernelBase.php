@@ -12,7 +12,7 @@ abstract class KernelBase implements KernelInterface
     /**
      * @var string
      */
-    protected string $loggerComponent = "application_" . RUNNER_TYPE;
+    protected string $loggerComponent = "kernel_" . RUNNER_TYPE;
 
     /**
      * @var Application
@@ -30,10 +30,10 @@ abstract class KernelBase implements KernelInterface
         $this->bootstrap();
     }
 
-    /**
-     * @return void
-     */
     abstract protected function bootstrap(): void;
+    abstract protected function signalHandler(int $signalNumber, $signalInfo): void;
+    abstract protected function bootDaemon(): void;
+    abstract protected function bootWorker(?string $threadId = null): void;
 
     /**
      * @inheritDoc

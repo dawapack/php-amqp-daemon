@@ -9,24 +9,25 @@ return [
     | Default settings
     |--------------------------------------------------------------------------
     */
-    // vertical scaling - minimum threads
+    // minimum vertical scaling
     'minimum' => 2,
-    // vertical scaling - maximum threads
+    // maximum vertical scaling
     'maximum' => 30,
-    // scaling triggers
+    // triggers used by scaling mechanism
     'triggers' => [
-        50 => 2,
-        70 => 5,
+        35 => 1,
+        55 => 2,
+        75 => 5,
         90 => 10,
     ],
-    // time to live - default: 15min
+    // How many times the thread will live - default: 15min
     'ttl' => 900,
-    // max job before restart the worker - default: 150
+    // Haw many jobs before restart the thread - default: 150
     'max_jobs' => 150,
 
     /*
     |--------------------------------------------------------------------------
-    | Infrastructure thread(s) settings
+    | Infrastructure default thread settings
     |--------------------------------------------------------------------------
     */
     'infrastructure' => [
@@ -37,12 +38,41 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Centralized configuration thread(s) settings
+    | Centralized configuration default thread settings
     |--------------------------------------------------------------------------
     */
     'configuration' => [
         'minimum' => 1,
         'maximum' => 1,
-        'enabled' => false
+        'enabled' => true
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Worker thread(s) default settings
+    |--------------------------------------------------------------------------
+    */
+    'worker' => [
+        'channels' => [
+            'inbound/commands' => [
+                'minimum' => 5,
+                'maximum' => 50,
+                'max_jobs' => 200,
+                'enabled' => true,
+            ],
+            'inbound/responses' => [
+                'minimum' => 5,
+                'maximum' => 30,
+                'max_jobs' => 100,
+                'enabled' => true,
+            ],
+            'inbound/events' => [
+                'minimum' => 10,
+                'maximum' => 50,
+                'max_jobs' => 100,
+                'enabled' => false,
+            ],
+        ],
+        'enabled' => true
     ],
 ];

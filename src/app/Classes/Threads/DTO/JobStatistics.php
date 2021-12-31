@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace DaWaPack\Classes\Thread\DTO;
+namespace DaWaPack\Classes\Threads\DTO;
 
 use DateTimeImmutable;
 use Spatie\DataTransferObject\DataTransferObject;
@@ -18,11 +18,6 @@ class JobStatistics extends DataTransferObject
      * @var string
      */
     public string $messageId;
-
-    /**
-     * @var string
-     */
-    public string $channelName;
 
     /**
      * @var string

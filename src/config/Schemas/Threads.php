@@ -18,7 +18,8 @@ class Threads
             'ttl' => Expect::int()->required(),
             'max_jobs' => Expect::int()->required(),
             'infrastructure' => self::infrastructureSchema(),
-            'configuration' => self::configurationSchema()
+            'configuration' => self::configurationSchema(),
+            'worker' => self::workerSchema()
         ]);
     }
 
@@ -38,5 +39,26 @@ class Threads
             'maximum' => Expect::int()->required(),
             'enabled' => Expect::bool()->required(),
         ]);
+    }
+
+    private static function workerSchema(): Schema
+    {
+        return Expect::structure([
+            'channels' => Expect::arrayOf(self::workerChannelSchema()),
+            'enabled' => Expect::bool()->required(),
+        ]);
+    }
+
+    private static function workerChannelSchema(): Schema
+    {
+        return Expect::structure([
+            'minimum' => Expect::int(),
+            'maximum' => Expect::int(),
+            'triggers' => Expect::array(),
+            'ttl' => Expect::int(),
+            'max_jobs' => Expect::int(),
+            'channelName' => Expect::string(),
+            'enabled' => Expect::bool(),
+        ])->skipDefaults(true);
     }
 }

@@ -57,15 +57,13 @@ class LoggerProcessor
 
         // Application name, environment & type
         $defaultRecord["application"] = [
-            "name" => env(" APP_SYSNAME", null),
-            "environment" => env(" APP_ENV", null),
+            "name" => env("APP_SYSNAME", null),
+            "environment" => env("APP_ENV", null),
             "type" => RUNNER_TYPE
         ];
-        $defaultRecord["application"]["name"] ?? env("APP_SYSNAME", "unknown");
-        $defaultRecord["application"]["environment"] ?? env("APP_ENV", null);
 
         // Component
-        $defaultRecord['component'] = env(" APP_LOGCOMPONENT", "application_unhandled_exception");
+        $defaultRecord['component'] = env("APP_LOGCOMPONENT", "application_unhandled_exception");
 
         // Extra
         $defaultRecord["extra"] = [];

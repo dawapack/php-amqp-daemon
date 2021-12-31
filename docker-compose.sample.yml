@@ -11,9 +11,6 @@ services:
     environment:
       ORIGIN: "eu"
       REGION: "eu-bucharest-1"
-      APP_SYSNAME: "php_amqp_daemon"
-      APP_ENV: "development"
-      APP_LOGCOMPONENT: "application_unhandled_exception"
     volumes:
       - type: bind
         source: ./src

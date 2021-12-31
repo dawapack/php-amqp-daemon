@@ -21,9 +21,8 @@ class Application extends Container
     use ErrorsHandler;
     use Runner;
 
+    private static Application $instance;
     private string $basePath;
-
-    private string $runnerType;
 
     /**
      * Application constructor.
@@ -40,6 +39,7 @@ class Application extends Container
 
         // make all definitions to default to shared - singletons
         $this->defaultToShared(true);
+        // use auto-wiring
         $this->enableAutoWiring();
         $this->bootstrapContainer();
         $this->registerErrorHandling();
@@ -50,25 +50,19 @@ class Application extends Container
         }
 
         // pcntl signals must be async
-        !pcntl_async_signals() && pcntl_async_signals(true);
+        pcntl_async_signals(true);
+
+        self::$instance = $this;
     }
 
     /**
-     * Check and register runner type
-     *
-     * @return void
+     * @return Application|null
      */
-    private function registerRunnerType(): void
+    public static function getInstance(): ?Application
     {
-        !defined('RUNNER_TYPE') && trigger_error(
-            "boot script must define the runner type",
-            E_USER_ERROR
-        );
-        $this->runnerType = RUNNER_TYPE;
-        !$this->isValidRunner() && trigger_error(
-            "unknown runner type",
-            E_USER_ERROR
-        );
+        return isset(self::$instance) && (self::$instance instanceof Application)
+            ? self::$instance
+            : null;
     }
 
     /**
@@ -76,25 +70,7 @@ class Application extends Container
      */
     public function runningInConsole(): bool
     {
-        return \PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg';
-    }
-
-    /**
-     * @return void
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    private function bootstrapContainer(): void
-    {
-        // Add singletons
-        $this->add(LoggerInterface::class, new LoggerFactory($this->basePath));
-        $this->add('config', new Configuration(
-            new LeagueConfiguration(),
-            $this->logger(),
-            $this->basePath,
-            ['app']
-        ));
+        return PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg';
     }
 
     /**
@@ -109,13 +85,33 @@ class Application extends Container
         try {
             return $this->get('config')->get($key);
         } catch (Throwable $reason) {
-            // fault tolerant - just log the thrown exception & return null
+            // fault-tolerant - just log the thrown exception & return null
             $this->logger()->error(
                 $reason->getMessage(),
                 ["error" => $reason]
             );
         }
         return null;
+    }
+
+    /**
+     * @param string $alias
+     *
+     * @return void
+     *
+     * @throws Throwable
+     */
+    public function withConfig(string $alias): void
+    {
+        try {
+            $this->get('config')->load($alias);
+        } catch (Throwable $reason) {
+            // fault-tolerant - just log the thrown exception
+            $this->logger()->error(
+                $reason->getMessage(),
+                ["error" => $reason]
+            );
+        }
     }
 
     /**
@@ -129,7 +125,33 @@ class Application extends Container
     }
 
     /**
-     * Instantiate the container auto wiring
+     * @return void
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    private function bootstrapContainer(): void
+    {
+        // Add singletons by his interface
+        $this->add(LoggerInterface::class, new LoggerFactory($this->basePath));
+
+        // Add singletons by alias
+        $this->add('config', new Configuration(
+            new LeagueConfiguration(),
+            $this->logger(),
+            $this->basePath,
+            ['app']
+        ));
+
+        // Add paths
+        $this->add('basePath', $this->basePath);
+        $this->add('configPath', $this->basePath . "/config");
+        $this->add('tempPath', $this->basePath . "/tmp");
+        $this->add('vendorPath', $this->basePath . "/vendor");
+    }
+
+    /**
+     * Instantiate the container auto wiring - resolutions will be cached
      *
      * @return void
      */
