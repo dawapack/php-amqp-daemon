@@ -6,16 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.2.0] - 2022-01-15
+## [0.3.0] - 2022-01-xx
 
 ### Added
 
-- 
+- Read settings from the configuration file (implements `league/config` package)
+- Create thread(s)
+- Destroy thread(s)
+- Inter process communication
+- Chassis framework flow improvements
+- Implements ServiceProvider
+
+## [0.2.0] - 2021-12-31
+
+### Added
+
+- PSR-11 container implementation with auto-wiring
 
 ## [0.1.0] - 2021-12-19
 
 ### Added
 
-- Create project folders tree
-- Create the base application
-- Create the development environment
+- Project folders tree
+- The base application
+- The development environment
