@@ -17,5 +17,4 @@ interface ConfigurationInterface
      * @param array|string $alias
      */
     public function load($alias): void;
-
 }

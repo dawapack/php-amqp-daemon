@@ -32,5 +32,10 @@ interface ThreadInstanceInterface
     /**
      * @return Channel
      */
-    public function getChannel(): Channel;
+    public function getOutgoingChannel(): Channel;
+
+    /**
+     * @return Channel
+     */
+    public function getIncomingChannel(): Channel;
 }

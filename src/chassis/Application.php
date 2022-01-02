@@ -146,6 +146,7 @@ class Application extends Container
         // Add paths
         $this->add('basePath', $this->basePath);
         $this->add('configPath', $this->basePath . "/config");
+        $this->add('logsPath', $this->basePath . "/logs");
         $this->add('tempPath', $this->basePath . "/tmp");
         $this->add('vendorPath', $this->basePath . "/vendor");
     }

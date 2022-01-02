@@ -19,7 +19,7 @@ $app = require __DIR__ . '/../bootstrap/app.php';
 
 /*
 |--------------------------------------------------------------------------
-| Load configurations
+| Load configuration files
 |--------------------------------------------------------------------------
 */
 $app->withConfig("threads");

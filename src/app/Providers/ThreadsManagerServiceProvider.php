@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace DaWaPack\Providers;
 
@@ -6,17 +7,14 @@ use DaWaPack\Classes\Threads\ThreadsManager;
 use DaWaPack\Interfaces\ThreadsConfigurationInterface;
 use DaWaPack\Interfaces\ThreadsManagerInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
+use parallel\Events;
 
 class ThreadsManagerServiceProvider extends AbstractServiceProvider
 {
 
     public function provides(string $id): bool
     {
-        // list of services provided by this service provider
-        $services = [
-            ThreadsManagerInterface::class => ThreadsManager::class,
-        ];
-        return isset($services[$id]);
+        return $id === ThreadsManagerInterface::class;
     }
 
     public function register(): void
@@ -24,6 +22,6 @@ class ThreadsManagerServiceProvider extends AbstractServiceProvider
         // Instantiate ThreadsManager
         $this->getContainer()
             ->add(ThreadsManagerInterface::class, ThreadsManager::class)
-            ->addArgument(ThreadsConfigurationInterface::class);
+            ->addArguments([ThreadsConfigurationInterface::class, new Events()]);
     }
 }

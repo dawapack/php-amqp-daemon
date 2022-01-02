@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace DaWaPack\Chassis\Classes\Base;
 
@@ -32,8 +33,6 @@ abstract class KernelBase implements KernelInterface
 
     abstract protected function bootstrap(): void;
     abstract protected function signalHandler(int $signalNumber, $signalInfo): void;
-    abstract protected function bootDaemon(): void;
-    abstract protected function bootWorker(?string $threadId = null): void;
 
     /**
      * @inheritDoc
@@ -53,9 +52,6 @@ abstract class KernelBase implements KernelInterface
 
     final protected function bootstrapSignals(): void
     {
-        pcntl_signal(PcntlSignals::SIGHUP, array($this, 'signalHandler'));
         pcntl_signal(PcntlSignals::SIGTERM, array($this, 'signalHandler'));
-        pcntl_signal(PcntlSignals::SIGINT, array($this, 'signalHandler'));
-        pcntl_signal(PcntlSignals::SIGPWR, array($this, 'signalHandler'));
     }
 }

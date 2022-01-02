@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace DaWaPack\Chassis\Helpers;
 
@@ -34,7 +35,7 @@ if (! function_exists('app')) {
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    function app(?string $alias)
+    function app(?string $alias = null)
     {
         return is_null($alias)
             ? Application::getInstance()

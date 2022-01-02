@@ -70,7 +70,7 @@ return [
                 'minimum' => 10,
                 'maximum' => 50,
                 'max_jobs' => 100,
-                'enabled' => false,
+                'enabled' => true,
             ],
         ],
         'enabled' => true

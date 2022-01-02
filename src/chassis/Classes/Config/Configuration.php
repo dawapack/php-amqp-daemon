@@ -183,5 +183,4 @@ class Configuration implements ConfigurationInterface
     {
         return sprintf("%s/%s/%s.php", $this->basePath, $path, $fileName);
     }
-
 }

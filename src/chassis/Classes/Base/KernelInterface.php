@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace DaWaPack\Chassis\Classes\Base;
 
@@ -19,9 +20,7 @@ interface KernelInterface
     public function logger(): LoggerInterface;
 
     /**
-     * @param string|null $threadId
-     *
      * @return void
      */
-    public function boot(?string $threadId = null): void;
+    public function boot(): void;
 }

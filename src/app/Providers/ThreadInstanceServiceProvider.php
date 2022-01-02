@@ -1,11 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace DaWaPack\Providers;
 
 use DaWaPack\Classes\Threads\ThreadInstance;
 use DaWaPack\Interfaces\ThreadInstanceInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
-use Psr\Log\LoggerInterface;
 
 class ThreadInstanceServiceProvider extends AbstractServiceProvider
 {
