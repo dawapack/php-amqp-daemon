@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace DaWaPack\Chassis\Classes\Logger;
 
@@ -54,9 +55,9 @@ class LoggerFactory
     private function getLogFileName(): string
     {
         $streamFromEnv = env('APP_LOGFILE', self::DEFAULT_LOG_FILE_NAME);
-        return (preg_match('/^php:\/\/[a-z]+$/', $streamFromEnv) === false
-            ? $this->getFileName($streamFromEnv)
-            : $streamFromEnv
+        return (preg_match('/^php:\/\/[a-z]+$/', $streamFromEnv) > 0
+            ? $streamFromEnv
+            : $this->getFileName($streamFromEnv)
         );
     }
 

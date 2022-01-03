@@ -7,5 +7,9 @@ set -e
 unlink /var/www/logs/app.log
 ln -s /proc/1/fd/0 /var/www/logs/app.log
 
+# composer dump-autoload & update
+#composer dump-autoload
+#composer update
+
 # Start supervisord
-supervisord --configuration /etc/supervisor/supervisord.conf
+exec supervisord --configuration /etc/supervisor/supervisord.conf

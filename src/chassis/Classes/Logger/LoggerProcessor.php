@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace DaWaPack\Chassis\Classes\Logger;
 
@@ -57,15 +58,13 @@ class LoggerProcessor
 
         // Application name, environment & type
         $defaultRecord["application"] = [
-            "name" => env("APPLICATION_SYSTEM_NAME", null),
-            "environment" => env("APPLICATION_ENVIRONMENT", null),
-            "type" => env("APPLICATION_TYPE", null)
+            "name" => env("APP_SYSNAME", null),
+            "environment" => env("APP_ENV", null),
+            "type" => RUNNER_TYPE
         ];
-        $defaultRecord["application"]["name"] ?? env("APP_SYSNAME", "unknown");
-        $defaultRecord["application"]["environment"] ?? env("APP_ENV", null);
 
         // Component
-        $defaultRecord['component'] = env("DEFAULT_LOG_COMPONENT", "application_unhandled_exception");
+        $defaultRecord['component'] = env("APP_LOGCOMPONENT", "application_unhandled_exception");
 
         // Extra
         $defaultRecord["extra"] = [];
@@ -96,11 +95,16 @@ class LoggerProcessor
         if (isset($loggerRecord["context"]["component"])) {
             $this->record->component = $loggerRecord["context"]["component"];
         }
+        unset($loggerRecord["context"]["component"]);
 
         // extra from context/extra
         if (isset($loggerRecord["context"]["extra"])) {
             $this->record->extra = $loggerRecord["context"]["extra"];
         }
+        unset($loggerRecord["context"]["extra"]);
+
+        // Copy context
+        $this->record->context = $loggerRecord["context"];
 
         // context/error
         if (

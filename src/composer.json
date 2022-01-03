@@ -4,15 +4,26 @@
   "keywords": ["dawapack", "php", "amqp", "daemon"],
   "license": "MIT",
   "type": "project",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:dawapack/asyncapi-contract-sample.git"
+    }
+  ],
   "require": {
+    "ext-simplexml": "*",
+    "ext-parallel": "*",
+    "ext-pcntl": "*",
     "php": "^7.4",
+    "dawapack/asyncapi-contract-sample": "^0",
+    "league/config": "^1.1",
     "league/container": "^4.2",
     "monolog/monolog": "^2.3.0",
-    "spatie/data-transfer-object": "^1.14.0",
+    "ramsey/uuid": "^4.2",
+    "spatie/data-transfer-object": "^2.8.0",
     "vlucas/phpdotenv": "^5.4.0"
   },
   "require-dev": {
-    "ext-simplexml": "*",
     "phpunit/phpunit": "^9.5.10"
   },
   "autoload": {
@@ -21,7 +32,8 @@
       "chassis/Helpers/general.php"
     ],
     "psr-4": {
-      "DaWaPack\\Daemon\\": "app/",
+      "DaWaPack\\": "app/",
+      "DaWaPack\\Config\\": "config/",
       "DaWaPack\\Bootstrap\\": "bootstrap/",
       "DaWaPack\\Chassis\\": "chassis/"
     }

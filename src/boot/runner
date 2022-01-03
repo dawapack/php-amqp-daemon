@@ -1,0 +1,48 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+use DaWaPack\Chassis\Application;
+use DaWaPack\Classes\Threads\Configuration\ThreadsConfiguration;
+use DaWaPack\Kernel;
+use DaWaPack\Providers\ThreadInstanceServiceProvider;
+use DaWaPack\Providers\ThreadsManagerServiceProvider;
+use DaWaPack\Interfaces\ThreadsConfigurationInterface;
+
+/*
+|--------------------------------------------------------------------------
+| Create The Application
+|--------------------------------------------------------------------------
+*/
+/** @var Application $app */
+$app = require __DIR__ . '/../bootstrap/app.php';
+
+/*
+|--------------------------------------------------------------------------
+| Load configuration files
+|--------------------------------------------------------------------------
+*/
+$app->withConfig("threads");
+
+/*
+|--------------------------------------------------------------------------
+| Register interfaces
+|--------------------------------------------------------------------------
+*/
+$app->add(ThreadsConfigurationInterface::class, ThreadsConfiguration::class)
+    ->addArgument($app->get("config")->get("threads"));
+
+/*
+|--------------------------------------------------------------------------
+| Register service providers
+|--------------------------------------------------------------------------
+*/
+$app->addServiceProvider(new ThreadsManagerServiceProvider());
+$app->addServiceProvider(new ThreadInstanceServiceProvider());
+
+/*
+|--------------------------------------------------------------------------
+| Create the kernel instance in the runner context type
+|--------------------------------------------------------------------------
+*/
+(new Kernel($app))->boot();

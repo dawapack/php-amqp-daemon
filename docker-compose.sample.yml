@@ -11,10 +11,6 @@ services:
     environment:
       ORIGIN: "eu"
       REGION: "eu-bucharest-1"
-      APPLICATION_SYSTEM_NAME: "php_amqp_daemon"
-      APPLICATION_ENVIRONMENT: "development"
-      APPLICATION_TYPE: "daemon"
-      DEFAULT_LOG_COMPONENT: "application_unhandled_exception"
     volumes:
       - type: bind
         source: ./src

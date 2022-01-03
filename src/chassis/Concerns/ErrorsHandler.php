@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
-namespace DaWaPack\Chassis\Support;
+namespace DaWaPack\Chassis\Concerns;
 
 use DaWaPack\Chassis\Exceptions\ApplicationErrorException;
+use DaWaPack\Chassis\Support\FatalError;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -34,11 +36,12 @@ trait ErrorsHandler
     /**
      * Convert PHP errors to ApplicationErrorException instances. Do not report deprecations!
      *
-     * @param  int  $level
-     * @param  string  $message
-     * @param  string  $file
-     * @param  int  $line
-     * @param  array  $context
+     * @param int $level
+     * @param string $message
+     * @param string $file
+     * @param int $line
+     * @param array $context
+     *
      * @return void
      *
      * @throws ApplicationErrorException
@@ -66,15 +69,13 @@ trait ErrorsHandler
      */
     protected function handleException(Throwable $reason)
     {
-        if (!is_null($this->logger)) {
-            $this->logger->alert(
-                "Application unhandled exception",
-                [
-                    "component" => "application_unhandled_exception",
-                    "error" => $reason
-                ]
-            );
-        }
+        $this->logger()->alert(
+            "Application unhandled exception",
+            [
+                "component" => "application_unhandled_exception",
+                "error" => $reason
+            ]
+        );
         exit(1);
     }
 
@@ -87,7 +88,7 @@ trait ErrorsHandler
      */
     public function handleShutdown()
     {
-        if (! is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
+        if (!is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
             $this->handleException($this->fatalErrorFromPhpError($error, 0));
         }
     }
@@ -95,8 +96,9 @@ trait ErrorsHandler
     /**
      * Create a new fatal error instance from an error array.
      *
-     * @param  array  $error
-     * @param  int|null  $traceOffset
+     * @param array $error
+     * @param int|null $traceOffset
+     *
      * @return FatalError
      */
     protected function fatalErrorFromPhpError(array $error, $traceOffset = null)
@@ -107,7 +109,8 @@ trait ErrorsHandler
     /**
      * Determine if the error type is fatal.
      *
-     * @param  int  $type
+     * @param int $type
+     *
      * @return bool
      */
     protected function isFatal($type)
@@ -118,7 +121,8 @@ trait ErrorsHandler
     /**
      * Determine if the error level is a deprecation.
      *
-     * @param  int  $level
+     * @param int $level
+     *
      * @return bool
      */
     protected function isDeprecation($level)

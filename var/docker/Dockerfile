@@ -7,7 +7,7 @@ RUN adduser -s /bin/bash -u 1000 -G dawapack -s /sbin/nologin -D dawapack
 # Container timezone will be UTC
 RUN echo "UTC" > /etc/timezone
 # Add requirements
-RUN apk add --no-cache bash bash-doc bash-completion zip unzip curl openssh supervisor
+RUN apk add --no-cache bash bash-doc bash-completion zip unzip curl openssh supervisor htop
 
 # Add personals
 RUN apk add --no-cache vim
@@ -48,7 +48,7 @@ COPY container/usr/ /usr/
 RUN chmod 755 /usr/bin/entrypoint.sh
 
 # Set the work directory
-WORKDIR /var/www/boot
+WORKDIR /var/www
 
 ## switch to user dawapack
 USER 1000:1000
