@@ -11,16 +11,19 @@
     }
   ],
   "require": {
-    "ext-simplexml": "*",
+    "php": "^7.4",
+    "ext-json": "*",
     "ext-parallel": "*",
     "ext-pcntl": "*",
-    "php": "^7.4",
+    "ext-simplexml": "*",
     "dawapack/asyncapi-contract-sample": "^0",
     "league/config": "^1.1",
     "league/container": "^4.2",
     "monolog/monolog": "^2.3.0",
+    "opis/json-schema": "^2.3",
     "ramsey/uuid": "^4.2",
     "spatie/data-transfer-object": "^2.8.0",
+    "symfony/yaml": "^5.4",
     "vlucas/phpdotenv": "^5.4.0"
   },
   "require-dev": {
