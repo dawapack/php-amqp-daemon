@@ -7,6 +7,7 @@ use DaWaPack\Chassis\Exceptions\ApplicationErrorException;
 use DaWaPack\Chassis\Support\FatalError;
 use Psr\Log\LoggerInterface;
 use Throwable;
+use function DaWaPack\Chassis\Helpers\env;
 
 trait ErrorsHandler
 {
@@ -18,6 +19,11 @@ trait ErrorsHandler
      */
     protected function registerErrorHandling()
     {
+        // skip custom errors handling in testing environment
+        if (env('APP_ENV') === "testing") {
+            return;
+        }
+
         error_reporting(-1);
 
         set_error_handler(function ($level, $message, $file = '', $line = 0) {

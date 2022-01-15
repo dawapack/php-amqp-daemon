@@ -10,7 +10,7 @@ use parallel\Events\Event\Type as EventType;
 use Throwable;
 use function DaWaPack\Chassis\Helpers\app;
 
-class Worker
+class Worker implements WorkerInterface
 {
 
     private const LOGGER_COMPONENT_PREFIX = "worker_";

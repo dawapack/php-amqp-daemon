@@ -7,6 +7,7 @@ use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use function DaWaPack\Chassis\Helpers\env;
 
 class LoggerFactory
@@ -31,6 +32,9 @@ class LoggerFactory
      */
     public function __invoke(): LoggerInterface
     {
+        if (env('APP_ENV') === "testing") {
+            return new NullLogger();
+        }
         // Create a logger instance
         $logger = new Logger(env('APP_SYSNAME', 'unknown'));
         // Add a custom handler

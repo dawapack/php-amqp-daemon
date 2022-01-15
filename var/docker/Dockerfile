@@ -47,10 +47,13 @@ COPY container/usr/ /usr/
 # Set rights
 RUN chmod 755 /usr/bin/entrypoint.sh
 
+# Add execute flag to wait-for-it script
+RUN chmod +x /usr/bin/wait-for-it
+
 # Set the work directory
 WORKDIR /var/www
 
 ## switch to user dawapack
 USER 1000:1000
 
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/wait-for-it", "rabbitmq:5672", "--", "entrypoint.sh"]

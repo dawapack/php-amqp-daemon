@@ -1,0 +1,20 @@
+<?php
+return [
+    "protocol",
+    "host",
+    "port",
+    "user",
+    "pass",
+    "vhost",
+    "insist",
+    "login_method",
+    "login_response",
+    "locale",
+    "connection_timeout",
+    "read_write_timeout",
+    "context",
+    "keepalive",
+    "heartbeat",
+    "channel_rpc_timeout",
+    "ssl_protocol",
+];

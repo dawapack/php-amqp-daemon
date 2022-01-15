@@ -5,12 +5,10 @@ namespace DaWaPack\Classes\Threads;
 
 use DaWaPack\Classes\Messages\InterProcessCommunication;
 use DaWaPack\Classes\Threads\Configuration\ThreadConfiguration;
-use DaWaPack\Interfaces\ThreadInstanceInterface;
-use DaWaPack\Interfaces\ThreadsConfigurationInterface;
-use DaWaPack\Interfaces\ThreadsManagerInterface;
+use DaWaPack\Classes\Threads\Configuration\ThreadsConfigurationInterface;
 use parallel\Events;
-use parallel\Events\Event;
 use parallel\Events\Error\Timeout;
+use parallel\Events\Event;
 use parallel\Events\Event\Type as EventType;
 use function DaWaPack\Chassis\Helpers\app;
 

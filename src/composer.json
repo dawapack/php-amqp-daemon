@@ -19,6 +19,7 @@
     "league/config": "^1.1",
     "league/container": "^4.2",
     "monolog/monolog": "^2.3.0",
+    "php-amqplib/php-amqplib": "^3.0",
     "ramsey/uuid": "^4.2",
     "spatie/data-transfer-object": "^2.8.0",
     "vlucas/phpdotenv": "^5.4.0"
@@ -40,8 +41,12 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "DaWaPack\\Daemon\\Tests\\": "tests/"
-    }
+      "DaWaPack\\Tests\\": "tests/"
+    },
+    "files": [
+      "chassis/Helpers/collections.php",
+      "chassis/Helpers/general.php"
+    ]
   },
   "config": {
     "preferred-install": "dist",

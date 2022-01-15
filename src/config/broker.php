@@ -18,12 +18,13 @@ return [
             'user' => 'guest',
             'pass' => 'guest',
             'vhost' => '/',
+            'heartbeat' => 10,
         ]
     ],
     'contracts' => [
         'openapi' => [
             'driver' => 'filesystem',
-            'path' => [
+            'paths' => [
                 'source' => '',
                 'validator' => ''
             ],
@@ -33,7 +34,7 @@ return [
         ],
         'asyncapi' => [
             'driver' => 'filesystem',
-            'path' => [
+            'paths' => [
                 'source' => '/vendor/dawapack/asyncapi-contract-sample/src',
                 'validator' => '/json-schema/bindings/amqp'
             ],

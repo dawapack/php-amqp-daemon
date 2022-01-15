@@ -5,8 +5,8 @@ namespace DaWaPack;
 
 use DaWaPack\Chassis\Classes\Base\KernelBase;
 use DaWaPack\Chassis\Helpers\Pcntl\PcntlSignals;
-use DaWaPack\Interfaces\ThreadsManagerInterface;
-use DaWaPack\Interfaces\WorkerInterface;
+use DaWaPack\Classes\Threads\ThreadsManagerInterface;
+use DaWaPack\Classes\Workers\WorkerInterface;
 
 class Kernel extends KernelBase
 {

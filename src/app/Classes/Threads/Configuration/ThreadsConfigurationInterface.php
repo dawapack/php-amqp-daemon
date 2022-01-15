@@ -1,9 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace DaWaPack\Interfaces;
-
-use DaWaPack\Classes\Threads\Configuration\ThreadConfiguration;
+namespace DaWaPack\Classes\Threads\Configuration;
 
 interface ThreadsConfigurationInterface
 {
