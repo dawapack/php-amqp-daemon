@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace DaWaPack\Classes\Brokers\Amqp\Configurations;
 
-interface ConfigurationInterface
+interface BindingsInterface
 {
 
     /**

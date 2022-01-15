@@ -12,7 +12,7 @@ interface ConfigurationLoaderInterface
      *
      * @return array
      *
-     * @throws \DaWaPack\Classes\Brokers\Exceptions\BrokerConfigurationException
+     * @throws BrokerConfigurationException
      */
     public function loadConfig(string $key): array;
 

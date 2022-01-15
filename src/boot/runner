@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use DaWaPack\Chassis\Application;
-use DaWaPack\Classes\Brokers\Configuration\BrokerConfiguration;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
 use DaWaPack\Classes\Threads\Configuration\ThreadsConfiguration;
 use DaWaPack\Classes\Threads\Configuration\ThreadsConfigurationInterface;
-use DaWaPack\Classes\Brokers\Configuration\BrokerConfigurationInterface;
 use DaWaPack\Kernel;
 use DaWaPack\Providers\ThreadInstanceServiceProvider;
 use DaWaPack\Providers\ThreadsManagerServiceProvider;

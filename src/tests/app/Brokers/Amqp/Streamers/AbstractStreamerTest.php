@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Streamers;
 
-use DaWaPack\Classes\Brokers\Amqp\Configurations\ConfigurationFactory;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\ConfigurationLoader;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
 use DaWaPack\Classes\Brokers\Amqp\Streamers\AbstractStreamer;
 use DaWaPack\Classes\Brokers\Amqp\Streamers\StreamConnectionFactory;
 use DaWaPack\Classes\Brokers\Amqp\Streamers\StreamerInterface;
@@ -23,9 +22,9 @@ class AbstractStreamerTest extends AppTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $brokerConfigurationFixture = require __DIR__ . "/../Fixtures/Config/broker.php";
         $amqpStreamConnection = (new StreamConnectionFactory())(
-            new ConfigurationFactory(),
-            new ConfigurationLoader($this->app->get('config'))
+            new BrokerConfiguration($brokerConfigurationFixture)
         );
         $this->sut = new class(
             $amqpStreamConnection, 'outbound/requests', 'publish'

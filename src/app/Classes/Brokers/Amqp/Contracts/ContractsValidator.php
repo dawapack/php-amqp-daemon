@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
-namespace DaWaPack\Classes\Brokers\Contracts;
+namespace DaWaPack\Classes\Brokers\Amqp\Contracts;
 
-use DaWaPack\Classes\Brokers\Contracts\Exceptions\ContractsValidatorException;
+use DaWaPack\Classes\Brokers\Amqp\Contracts\Exceptions\ContractsValidatorException;
 use Opis\JsonSchema\Errors\ErrorFormatter;
 use Opis\JsonSchema\Validator;
 
@@ -54,5 +55,4 @@ class ContractsValidator
         }
         return true;
     }
-
 }

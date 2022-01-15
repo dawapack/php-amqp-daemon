@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace DaWaPack\Classes\Brokers\Amqp\Configurations;
+namespace DaWaPack\Classes\Brokers\Amqp\Configurations\DTO;
 
-use DaWaPack\Classes\Brokers\Exceptions\BrokerConfigurationException;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BindingsInterface;
 use Spatie\DataTransferObject\DataTransferObject;
 
-class ConnectionConfiguration extends DataTransferObject implements ConfigurationInterface
+class BrokerConnection extends DataTransferObject implements BindingsInterface
 {
 
     /**
@@ -95,20 +95,6 @@ class ConnectionConfiguration extends DataTransferObject implements Configuratio
      * @var string|null
      */
     public ?string $ssl_protocol = null;
-
-    /**
-     * ConnectionConfiguration constructor.
-     *
-     * @param ConfigurationLoaderInterface $configurationLoader
-     *
-     * @throws BrokerConfigurationException
-     */
-    public function __construct(
-        ConfigurationLoaderInterface $configurationLoader
-    ) {
-        parent::__construct($configurationLoader->loadConfig("broker.connection"));
-    }
-
 
     /**
      * @inheritDoc

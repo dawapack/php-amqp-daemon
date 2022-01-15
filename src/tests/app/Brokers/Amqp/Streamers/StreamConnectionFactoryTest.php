@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Streamers;
 
-use DaWaPack\Classes\Brokers\Amqp\Configurations\ConfigurationFactory;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\ConfigurationLoader;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
 use DaWaPack\Classes\Brokers\Amqp\Streamers\StreamConnectionFactory;
 use DaWaPack\Tests\AppTestCase;
 use PhpAmqpLib\Channel\AMQPChannel;
@@ -17,10 +16,8 @@ class StreamConnectionFactoryTest extends AppTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->sut = (new StreamConnectionFactory())(
-            new ConfigurationFactory(),
-            new ConfigurationLoader($this->app->get('config'))
-        );
+        $brokerConfigurationFixture = require __DIR__ . "/../Fixtures/Config/broker.php";
+        $this->sut = (new StreamConnectionFactory())(new BrokerConfiguration($brokerConfigurationFixture));
     }
 
     protected function tearDown(): void

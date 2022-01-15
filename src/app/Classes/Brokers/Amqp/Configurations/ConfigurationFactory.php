@@ -10,12 +10,12 @@ class ConfigurationFactory implements ConfigurationFactoryInterface
      * @param ConfigurationLoaderInterface $configurationLoader
      * @param string $configurationClass
      *
-     * @return ConfigurationInterface
+     * @return BindingsInterface
      */
     public function __invoke(
         ConfigurationLoaderInterface $configurationLoader,
         string $configurationClass
-    ): ConfigurationInterface {
+    ): BindingsInterface {
         return new $configurationClass($configurationLoader);
     }
 }
