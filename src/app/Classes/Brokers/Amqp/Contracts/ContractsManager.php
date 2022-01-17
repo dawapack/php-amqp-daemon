@@ -6,6 +6,7 @@ namespace DaWaPack\Classes\Brokers\Amqp\Contracts;
 use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
 use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
 use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\BrokerChannel;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\BrokerChannelsCollection;
 use DaWaPack\Classes\Brokers\Amqp\Contracts\Exceptions\ContractsValidatorException;
 use Symfony\Component\Yaml\Yaml;
 use function DaWaPack\Chassis\Helpers\objectToArrayRecursive;
@@ -17,7 +18,7 @@ class ContractsManager
 
     private BrokerConfiguration $brokerConfiguration;
     private ContractsValidator $validator;
-    private array $infrastructureChannels = [];
+    private array $channels = [];
 
     /**
      * @throws ContractsValidatorException
@@ -32,9 +33,14 @@ class ContractsManager
         $this->validateInfrastructureFile();
     }
 
-    public function getInfrastructureChannel(string $channelName): ?BrokerChannel
+    public function getChannel(string $channelName): ?BrokerChannel
     {
-        return $this->infrastructureChannels[$channelName] ?? null;
+        return $this->channels[$channelName] ?? null;
+    }
+
+    public function getChannels(): BrokerChannelsCollection
+    {
+        return new BrokerChannelsCollection(array_values($this->channels));
     }
 
     /**
@@ -45,7 +51,7 @@ class ContractsManager
         $infrastructureFile = $this->parseYamlFile($this->getInfrastructureFileName());
         foreach ($infrastructureFile->channels as $channelName => $channelValues) {
             $this->validateBindingsAmqp($channelValues);
-            $this->infrastructureChannels[$channelName] = new BrokerChannel(objectToArrayRecursive($channelValues));
+            $this->channels[$channelName] = new BrokerChannel(objectToArrayRecursive($channelValues));
         }
     }
 
@@ -58,7 +64,8 @@ class ContractsManager
         if (empty($brokerContractConfiguration->paths->validator)) {
             throw new ContractsValidatorException("validator path configuration cannot be empty");
         }
-        $this->validator->loadValidators($brokerContractConfiguration->paths->validator);
+        $this->validator
+            ->loadValidators($brokerContractConfiguration->paths->validator);
     }
 
     /**

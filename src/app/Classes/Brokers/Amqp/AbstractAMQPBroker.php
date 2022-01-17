@@ -20,7 +20,7 @@ abstract class AbstractAMQPBroker implements BrokerInterface
     ];
 
     /**
-     * @throws \DaWaPack\Classes\Brokers\Exceptions\BrokerInvalidOperationException
+     * @throws BrokerInvalidOperationException
      */
     public function __construct()
     {

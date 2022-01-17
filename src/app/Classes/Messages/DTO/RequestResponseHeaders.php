@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace DaWaPack\Classes\Brokers\Amqp\Messages\DTO;
+namespace DaWaPack\Classes\Messages\DTO;
 
 use Spatie\DataTransferObject\DataTransferObject;
 
-class Headers extends DataTransferObject
+class RequestResponseHeaders extends DataTransferObject
 {
     /**
      * @example 'text/plain', 'application/json', 'application/gzip'
@@ -72,7 +72,7 @@ class Headers extends DataTransferObject
     public ?string $app_id;
 
     /**
-     * @var array|null
+     * @var array
      */
-    public ?array $application_headers;
+    public array $application_headers = [];
 }

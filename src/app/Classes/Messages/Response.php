@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace DaWaPack\Classes\Brokers\Amqp\Messages;
+namespace DaWaPack\Classes\Messages;
 
-use DaWaPack\Classes\Brokers\Amqp\Messages\DTO\Headers;
+use DaWaPack\Classes\Messages\DTO\RequestResponseHeaders;
 
 class Response
 {
     /**
-     * @var Headers
+     * @var \DaWaPack\Classes\Messages\DTO\RequestResponseHeaders
      */
-    protected Headers $headers;
+    protected RequestResponseHeaders $headers;
 
     /**
      * @var mixed|null
