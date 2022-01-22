@@ -11,6 +11,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
       - name: Build docker images
-        run: docker-compose build
+        run: |
+          cp docker-compose.sample.yml docker-compose.yml
+          docker-compose build
       - name: PHPUnit tests
         run: docker exec -it dawapack_amqp_daemon ./vendor/bin/phpunit tests --coverage-text
