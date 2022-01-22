@@ -17,22 +17,21 @@ jobs:
           apt-get update
           apt-get install -y git
           pecl install parallel
-          
-      - name: Checkout
-        uses: actions/checkout@v2
-        
-      - name: Test
-        run: |
-          ls -lsa
           curl -sS https://getcomposer.org/installer -o composer-setup.php
           php composer-setup.php --install-dir=/usr/bin --filename=composer
           rm -rf composer-setup.php
+          
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Validate composer.json and composer.lock
+        working-directory: src
         run: composer validate
 
       - name: Install dependencies
+        working-directory: src
         run: composer install --no-progress --prefer-dist --optimize-autoloader 
 
       - name: Run PHPUnit
+        working-directory: src
         run: src/vendor/bin/phpunit --coverage-text
