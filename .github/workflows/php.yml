@@ -20,4 +20,4 @@ jobs:
         with:
           time: '30s'
       - name: PHPUnit tests
-        run: docker exec -it dawapack_amqp_daemon ./vendor/bin/phpunit tests --coverage-text
+        run: docker exec -i dawapack_amqp_daemon ./vendor/bin/phpunit tests --coverage-text
