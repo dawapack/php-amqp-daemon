@@ -6,32 +6,11 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    container:
-      image: php:7.4-zts
-
     steps:
-      - name: Init Docker Image
-        run: |
-          apt-get update
-          apt-get install -y git
-          pecl install parallel
-          curl -sS https://getcomposer.org/installer -o composer-setup.php
-          php composer-setup.php --install-dir=/usr/bin --filename=composer
-          rm -rf composer-setup.php
-          
-      - name: Checkout
+      - name: Check out code
         uses: actions/checkout@v2
-
-      - name: Validate composer.json and composer.lock
-        working-directory: src
-        run: composer validate
-
-      - name: Install dependencies
-        working-directory: src
-        run: composer install --no-progress --prefer-dist --optimize-autoloader 
-
-      - name: Run PHPUnit
-        working-directory: src
-        run: src/vendor/bin/phpunit --coverage-text
+      - name: Build docker images
+        run: docker-compose build
+      - name: PHPUnit tests
+        run: docker exec -it dawapack_amqp_daemon ./vendor/bin/phpunit tests --coverage-text
