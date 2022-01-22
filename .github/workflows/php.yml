@@ -18,7 +18,7 @@ jobs:
         with:
           php-version: '7.4'
           coverage: xdebug
-          extensions: parallel
+          extensions: :parallel
 
       - name: Validate composer.json and composer.lock
         working-directory: src
