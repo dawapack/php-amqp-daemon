@@ -1,0 +1,148 @@
+asyncapi: 2.2.0
+info:
+  title: DaWaPack AsyncAPI sample infrastructure definitions used by unit tests
+  version: 0.1.0
+  description: This sample data below shows the DaWaPack PHP-AMQP-Daemon infrastructure definitions
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  development:
+    url: rabbitmq
+    description: Development server
+    protocol: amqp
+    protocolVersion: 0.9.1
+    security:
+      - user_pass: [ ]
+defaultContentType: application/json
+channels:
+  test/outbound/commands:
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: DaWaPack.DX.TestCommands
+          type: direct
+          durable: false
+          autoDelete: false
+          vhost: /
+    publish:
+      bindings:
+        amqp:
+          deliveryMode: 2
+          mandatory: true
+      message:
+        name: AnyOutboundCommandMessage
+        bindings:
+          amqp:
+            contentEncoding: UTF-8
+            messageType: ''
+  test/inbound/commands:
+    bindings:
+      amqp:
+        is: queue
+        queue:
+          name: DaWaPack.Q.TestCommands
+          durable: false
+          exclusive: false
+          autoDelete: false
+          vhost: /
+    subscribe:
+      bindings:
+        amqp:
+          cc: [ 'DaWaPack.DX.TestCommands|Any.RK.TestCommand' ]
+          ack: true
+      message:
+        name: AnyInboundCommandMessage
+        bindings:
+          amqp:
+            contentEncoding: UTF-8
+            messageType: ''
+  test/outbound/responses:
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: DaWaPack.DX.TestResponses
+          type: direct
+          durable: false
+          autoDelete: false
+          vhost: /
+    publish:
+      bindings:
+        amqp:
+          deliveryMode: 2
+          mandatory: true
+      message:
+        name: AnyOutboundResponseMessage
+        bindings:
+          amqp:
+            contentEncoding: UTF-8
+            messageType: ''
+  test/inbound/responses:
+    bindings:
+      amqp:
+        is: queue
+        queue:
+          name: DaWaPack.Q.TestResponses
+          durable: false
+          exclusive: false
+          autoDelete: false
+          vhost: /
+    subscribe:
+      bindings:
+        amqp:
+          cc: [ 'DaWaPack.DX.TestResponses|Any.RK.TestResponseLoopback' ]
+          ack: true
+      message:
+        name: AnyInboundResponseMessage
+        bindings:
+          amqp:
+            contentEncoding: UTF-8
+            messageType: ''
+  test/outbound/events:
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: DaWaPack.FX.TestEvents
+          type: fanout
+          durable: false
+          autoDelete: false
+          vhost: /
+    publish:
+      bindings:
+        amqp:
+          deliveryMode: 2
+          mandatory: false
+      message:
+        name: AnyOutboundEventMessage
+        bindings:
+          amqp:
+            contentEncoding: UTF-8
+            messageType: ''
+  test/inbound/events:
+    bindings:
+      amqp:
+        is: queue
+        queue:
+          name: DaWaPack.Q.TestEvents
+          durable: false
+          exclusive: false
+          autoDelete: false
+          vhost: /
+    subscribe:
+      bindings:
+        amqp:
+          cc: []
+          ack: true
+      message:
+        name: AnyInboundEventMessage
+        bindings:
+          amqp:
+            contentEncoding: UTF-8
+            messageType: ''
+components:
+  securitySchemes:
+    user_pass:
+      type: userPassword

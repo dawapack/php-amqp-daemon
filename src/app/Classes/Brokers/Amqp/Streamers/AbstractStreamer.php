@@ -3,24 +3,30 @@ declare(strict_types=1);
 
 namespace DaWaPack\Classes\Brokers\Amqp\Streamers;
 
+use Closure;
 use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\BrokerChannel;
 use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\ChannelBindings;
 use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\OperationBindings;
+use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManager;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Connection\Heartbeat\PCNTLHeartbeatSender;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 use PhpAmqpLib\Exception\AMQPProtocolChannelException;
 use PhpAmqpLib\Wire\AMQPTable;
+use phpDocumentor\Reflection\Types\This;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 abstract class AbstractStreamer implements StreamerInterface
 {
+    public const CONSUME_OPERATION = 'consume';
+    public const PUBLISH_OPERATION = 'publish';
+    protected const LOGGER_COMPONENT_PREFIX = "abstract_streamer_";
 
     protected AMQPStreamConnection $streamerConnection;
-    protected PCNTLHeartbeatSender $heartbeatSender;
-    protected ?string $channelName;
-    protected ?string $operation;
+    protected ContractsManager $contractsManager;
+    protected LoggerInterface $logger;
     protected array $exchangeDeclareMapper = [
         'name' => null,
         'type' => null,
@@ -29,7 +35,7 @@ abstract class AbstractStreamer implements StreamerInterface
         'autoDelete' => true,
         'internal' => false,
         'nowait' => false,
-        'arguments' => array(),
+        'arguments' => [],
         'ticket' => null
     ];
     protected array $queueDeclareMapper = [
@@ -44,36 +50,35 @@ abstract class AbstractStreamer implements StreamerInterface
         ],
         'ticket' => null
     ];
-    protected array $availableChannels;
+    protected string $channelName;
+    protected string $exchangeName;
+    protected string $queueName;
+    protected array $availableChannels = [
+        'exchanges' => [],
+        'queues' => [],
+    ];
+
+    private PCNTLHeartbeatSender $heartbeatSender;
 
     /**
      * AbstractStreamer constructor.
      *
      * @param AMQPStreamConnection $streamerConnection
-     * @param string|null $channelName
-     * @param string|null $operation
+     * @param ContractsManager $contractsManager
+     * @param LoggerInterface $logger
      */
     public function __construct(
         AMQPStreamConnection $streamerConnection,
-        ?string $channelName = null,
-        ?string $operation = null
+        ContractsManager $contractsManager,
+        LoggerInterface $logger
     ) {
-        $this->channelName = $channelName;
-        $this->operation = $operation;
         $this->streamerConnection = $streamerConnection;
-        // enable heartbeat?
-        if ($streamerConnection->getHeartbeat() > 0) {
-            $this->heartbeatSender = new PCNTLHeartbeatSender($streamerConnection);
-            $this->heartbeatSender->register();
-        }
-        // arguments transformation - AMQPTable format is required
-        $this->queueDeclareMapper["arguments"] = new AMQPTable($this->queueDeclareMapper["arguments"]);
-        $this->exchangeDeclareMapper["arguments"] = new AMQPTable($this->exchangeDeclareMapper["arguments"]);
-        // declare root available channels structure
-        $this->availableChannels = [
-            'exchanges' => [],
-            'queues' => [],
-        ];
+        $this->contractsManager = $contractsManager;
+        $this->logger = $logger;
+        // enable heartbeat
+        $this->enableHeartbeat();
+        // setup declare mapper arguments
+        $this->transformDeclareMapperArguments();
     }
 
     /**
@@ -82,6 +87,31 @@ abstract class AbstractStreamer implements StreamerInterface
     public function __destruct()
     {
         $this->disconnect();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getQueueName(): ?string
+    {
+        return $this->queueName ?? null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getChannelName(): ?string
+    {
+        return $this->channelName ?? null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setChannelName(string $channelName): self
+    {
+        $this->channelName = $channelName;
+        return $this;
     }
 
     /**
@@ -223,5 +253,21 @@ abstract class AbstractStreamer implements StreamerInterface
             $channel->queue_bind(...$functionArguments);
             $channel->close();
         }
+    }
+
+    private function enableHeartbeat(): void
+    {
+        if ($this->streamerConnection->getHeartbeat() === 0) {
+            return;
+        }
+        $this->heartbeatSender = new PCNTLHeartbeatSender($this->streamerConnection);
+        $this->heartbeatSender->register();
+    }
+
+    private function transformDeclareMapperArguments(): void
+    {
+        // arguments transformation - AMQPTable format is required
+        $this->queueDeclareMapper["arguments"] = new AMQPTable($this->queueDeclareMapper["arguments"]);
+        $this->exchangeDeclareMapper["arguments"] = new AMQPTable($this->exchangeDeclareMapper["arguments"]);
     }
 }

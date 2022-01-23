@@ -12,6 +12,7 @@ class Threads
     public static function getSchema(): Schema
     {
         return Expect::structure([
+            'handler' => Expect::string()->required(),
             'minimum' => Expect::int()->required(),
             'maximum' => Expect::int()->required(),
             'triggers' => Expect::array()->required(),
@@ -52,6 +53,7 @@ class Threads
     private static function workerChannelSchema(): Schema
     {
         return Expect::structure([
+            'handler' => Expect::string(),
             'minimum' => Expect::int(),
             'maximum' => Expect::int(),
             'triggers' => Expect::array(),

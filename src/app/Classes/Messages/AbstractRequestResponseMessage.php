@@ -25,8 +25,6 @@ abstract class AbstractRequestResponseMessage
 
     protected RequestResponseHeaders $headers;
     protected string $routingKey;
-    protected string $exchange;
-    protected string $queue;
     protected ?string $consumerTag;
 
     /**
@@ -67,6 +65,17 @@ abstract class AbstractRequestResponseMessage
     }
 
     /**
+     * @var mixed $body
+     *
+     * @return $this
+     */
+    public function setBody($body): self
+    {
+        $this->body = $body;
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getBody()
@@ -75,16 +84,65 @@ abstract class AbstractRequestResponseMessage
     }
 
     /**
-     * @return $this
-     * @var mixed $body
+     * @param string $routingKey
      *
+     * @return $this
      */
-    public function setBody($body): self
+    public function setRoutingKey(string $routingKey): self
     {
-        $this->body = $body;
+        $this->routingKey = $routingKey;
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getRoutingKey(): string
+    {
+        return $this->routingKey ?? '';
+    }
+
+    /**
+     * @param string $messageType
+     *
+     * @return $this
+     */
+    public function setMessageType(string $messageType): self
+    {
+        $this->headers->type = $messageType;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessageType(): string
+    {
+        return $this->getHeaders("type");
+    }
+
+    /**
+     * @param string $replyTo
+     *
+     * @return $this
+     */
+    public function setReplyTo(string $replyTo): self
+    {
+        $this->headers->reply_to = $replyTo;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReplyTo(): string
+    {
+        return $this->getHeaders("reply_to");
+    }
+
+    /**
+     * @return AMQPMessage
+     */
     public function toAmqpMessage(): AMQPMessage
     {
         $headers = $this->headers->toArray();

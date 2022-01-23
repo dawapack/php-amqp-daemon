@@ -12,6 +12,12 @@ class ThreadConfiguration extends DataTransferObject
      * @var string
      */
     public string $threadType;
+
+    /**
+     * @var string
+     */
+    public string $handler;
+
     /**
      * @var int
      */

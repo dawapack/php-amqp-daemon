@@ -3,13 +3,16 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Streamers;
 
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
+use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManager;
+use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsValidator;
 use DaWaPack\Classes\Brokers\Amqp\Streamers\AbstractStreamer;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\StreamConnectionFactory;
 use DaWaPack\Classes\Brokers\Amqp\Streamers\StreamerInterface;
 use DaWaPack\Tests\AppTestCase;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
+use Psr\Log\LoggerInterface;
+use function DaWaPack\Chassis\Helpers\app;
 
 class AbstractStreamerTest extends AppTestCase
 {
@@ -22,13 +25,13 @@ class AbstractStreamerTest extends AppTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $brokerConfigurationFixture = require __DIR__ . "/../Fixtures/Config/broker.php";
-        $amqpStreamConnection = (new StreamConnectionFactory())(
-            new BrokerConfiguration($brokerConfigurationFixture)
-        );
+        $brokerConfiguration = app(BrokerConfigurationInterface::class);
         $this->sut = new class(
-            $amqpStreamConnection, 'outbound/requests', 'publish'
-        ) extends AbstractStreamer {};
+            app()->get('broker-streamer'),
+            new ContractsManager($brokerConfiguration, new ContractsValidator()),
+            app(LoggerInterface::class)
+        ) extends AbstractStreamer {
+        };
     }
 
     public function testSutIsAnInstanceImplementingAStreamerInterface()

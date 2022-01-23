@@ -4,38 +4,41 @@ declare(strict_types=1);
 namespace DaWaPack\Tests\app\Messages;
 
 use DateTime;
+use DaWaPack\Chassis\Application;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
+use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManager;
 use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManagerInterface;
+use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsValidator;
 use DaWaPack\Classes\Brokers\Amqp\Handlers\AckNackHandlerInterface;
 use DaWaPack\Classes\Brokers\Amqp\Streamers\PublisherStreamer;
 use DaWaPack\Classes\Brokers\Amqp\Streamers\PublisherStreamerInterface;
 use DaWaPack\Classes\Messages\AbstractRequestResponseMessage;
-use DaWaPack\Classes\Messages\Request;
+use DaWaPack\Classes\Messages\Response;
 use DaWaPack\Tests\AppTestCase;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
 
-class RequestTest extends AppTestCase
+class ResponseTest extends AppTestCase
 {
-    private Request $sut;
+    private Response $sut;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->sut = new Request(
+        $this->sut = new Response(
             'this is a body string',
-            [
-                "content_encoding" => "UTF-8",
-                "reply_to" => "OtherService.Q.Responses",
-            ]
+            ["content_encoding" => "UTF-8"]
         );
     }
 
     public function testSutIsInstanceOfRequest()
     {
-        $this->assertInstanceOf(Request::class, $this->sut);
+        $this->assertInstanceOf(Response::class, $this->sut);
     }
 
     public function testSutCanInitializeDefaultsHeaders()
@@ -46,8 +49,8 @@ class RequestTest extends AppTestCase
     public function testSutCanHandleMessageTypeHeader()
     {
         $this->assertEquals("default", $this->sut->getMessageType());
-        $this->sut->setMessageType('doSomethingRequest');
-        $this->assertEquals("doSomethingRequest", $this->sut->getMessageType());
+        $this->sut->setMessageType('doSomethingResponse');
+        $this->assertEquals("doSomethingResponse", $this->sut->getMessageType());
     }
 
     public function testSutCanSetRoutingKey()
@@ -59,13 +62,6 @@ class RequestTest extends AppTestCase
             "DaWaPack.RK.Responses",
             $routingKeyProperty->getValue($this->sut)
         );
-    }
-
-    public function testSutCanHandleReplyToHeader()
-    {
-        $this->assertEquals("OtherService.Q.Responses", $this->sut->getReplyTo());
-        $this->sut->setReplyTo('DaWaPack.Q.Responses');
-        $this->assertEquals("DaWaPack.Q.Responses", $this->sut->getReplyTo());
     }
 
     public function testSutCanSetAndGetBody()
@@ -82,7 +78,7 @@ class RequestTest extends AppTestCase
 
     public function testSutCanHandleTextPlainContentType()
     {
-        $sut = new Request(
+        $sut = new Response(
             'this is a body string',
             ["content_type" => AbstractRequestResponseMessage::TEXT_CONTENT_TYPE]
         );
@@ -91,7 +87,7 @@ class RequestTest extends AppTestCase
 
     public function testSutCanHandleJsonContentType()
     {
-        $sut = new Request(
+        $sut = new Response(
             ["test" => "ok"],
             ["content_type" => AbstractRequestResponseMessage::JSON_CONTENT_TYPE]
         );
@@ -100,7 +96,7 @@ class RequestTest extends AppTestCase
 
     public function testSutCanHandleGzipContentType()
     {
-        $sut = new Request(
+        $sut = new Response(
             json_encode(["test" => "ok"]),
             ["content_type" => AbstractRequestResponseMessage::GZIP_CONTENT_TYPE]
         );
@@ -116,64 +112,32 @@ class RequestTest extends AppTestCase
                 'content_encoding' => AbstractRequestResponseMessage::DEFAULT_HEADER_CONTENT_ENCODING,
                 'priority' => 0,
                 'correlation_id' => (Uuid::uuid4())->toString(),
-                'reply_to' => 'DaWaPack.Q.Responses',
                 'message_id' => (Uuid::uuid4())->toString(),
-                'type' => 'doSomethingRequest',
+                'type' => 'doSomethingResponse',
                 'application_headers' => new AMQPTable([
                     'version' => '1.0.0',
-                    'dateTime' => (new DateTime('now'))->format('Y-m-d H:i:s.v')
+                    'dateTime' => (new DateTime('now'))->format('Y-m-d H:i:s.v'),
+                    'statusCode' => 401,
+                    'statusMessage' => 'Unauthorized'
                 ])
             ]
         ];
         $AMQPMessage = new AMQPMessage(...$message);
         $AMQPMessage->setConsumerTag("any#consume#tag");
 
-        $sut = new Request(
+        $sut = new Response(
             $AMQPMessage->getBody(),
             $AMQPMessage->get_properties(),
             $AMQPMessage->getConsumerTag()
         );
 
-        $this->assertEquals("doSomethingRequest", $sut->getHeaders("type"));
+        $this->assertEquals("doSomethingResponse", $sut->getHeaders("type"));
         $this->assertIsObject($sut->getBody());
         $this->assertObjectHasAttribute("test", $sut->getBody());
         $this->assertEquals(
             AbstractRequestResponseMessage::JSON_CONTENT_TYPE,
             $sut->getHeaders("content_type")
         );
+        $this->assertArrayHasKey("statusCode", $sut->getHeaders("application_headers"));
     }
-
-//    public function testSutCanSendRequestMessage()
-//    {
-//        $sut = new Request(
-//            ["test" => __METHOD__],
-//            ["content_type" => AbstractRequestResponseMessage::JSON_CONTENT_TYPE]
-//        );
-//        $sut->setRoutingKey("Any.RK.TestCommand");
-//
-//        $app = $this->app;
-//
-//        $app->add(PublisherStreamerInterface::class, function ($sutClass, $app) {
-//            $ackHandler = new class($sutClass) implements AckNackHandlerInterface {
-//                private $sutClass;
-//
-//                public function __construct($sutClass)
-//                {
-//                    $this->sutClass = $sutClass;
-//                }
-//
-//                public function handle(AMQPMessage $message): void
-//                {
-//                    $this->sutClass->assertInstanceOf(AMQPMessage::class, $message);
-//                }
-//            };
-//            return (new PublisherStreamer(
-//                $app->get('broker-streamer'),
-//                $app->get(ContractsManagerInterface::class),
-//                $app->get(LoggerInterface::class)
-//            ))->setAckHandler($ackHandler);
-//        })->addArguments([$this, $app]);
-//
-//        $sut->send("test/outbound/commands");
-//    }
 }

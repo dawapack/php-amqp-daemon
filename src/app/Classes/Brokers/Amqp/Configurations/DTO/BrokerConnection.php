@@ -105,4 +105,35 @@ class BrokerConnection extends DataTransferObject implements BindingsInterface
             ? array_values($this->except("protocol")->toArray())
             : $this->except("protocol")->toArray();
     }
+
+    public function toLazyConnectionFunctionArguments(bool $onlyValues = true): array
+    {
+        $functionArguments = array_merge(
+            $this->only(
+                ...array_values([
+                    "host",
+                    "port",
+                    "user",
+                    "pass",
+                    "vhost"
+                ])
+            )->toArray(),
+            [
+                "options" => $this->only(
+                    ...array_values([
+                        "insist",
+                        "login_method",
+                        "login_response",
+                        "locale",
+                        "keepalive",
+                        "heartbeat"
+                    ])
+                )->toArray()
+            ]
+        );
+        $functionArguments["options"]["read_timeout"] = $this->read_write_timeout;
+        $functionArguments["options"]["write_timeout"] = $this->read_write_timeout;
+
+        return $onlyValues ? array_values($functionArguments) : $functionArguments;
+    }
 }

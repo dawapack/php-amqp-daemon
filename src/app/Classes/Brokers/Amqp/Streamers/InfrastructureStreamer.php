@@ -3,21 +3,8 @@ declare(strict_types=1);
 
 namespace DaWaPack\Classes\Brokers\Amqp\Streamers;
 
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManager;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-
-class InfrastructureStreamer extends AbstractStreamer implements StreamerInterface
+class InfrastructureStreamer extends AbstractStreamer
 {
-    protected ContractsManager $contractsManager;
-
-    public function __construct(
-        AMQPStreamConnection $streamerConnection,
-        ContractsManager $contractsManager
-    ) {
-        $this->contractsManager = $contractsManager;
-        parent::__construct($streamerConnection);
-    }
-
     public function brokerChannelsSetup(bool $declareBindings = true): int
     {
         $channels = $this->contractsManager->getChannels();

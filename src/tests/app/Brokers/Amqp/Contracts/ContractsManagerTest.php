@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Contracts;
 
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
 use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\BrokerChannelsCollection;
 use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManager;
 use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsValidator;
 use DaWaPack\Tests\AppTestCase;
+use function DaWaPack\Chassis\Helpers\app;
 
 class ContractsManagerTest extends AppTestCase
 {
@@ -16,9 +17,8 @@ class ContractsManagerTest extends AppTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $brokerConfigurationFixture = require __DIR__ . "/../Fixtures/Config/broker.php";
         $this->sut = new ContractsManager(
-            new BrokerConfiguration($brokerConfigurationFixture),
+            app(BrokerConfigurationInterface::class),
             new ContractsValidator()
         );
     }
@@ -28,14 +28,14 @@ class ContractsManagerTest extends AppTestCase
         $this->assertInstanceOf(ContractsManager::class, $this->sut);
     }
 
-    public function testSutCanReturnRpcOutboundCommandsChannelConfiguration()
+    public function testSutCanReturnTestOutboundCommandsChannelConfiguration()
     {
-        $channel = $this->sut->getChannel("rpc/outbound/commands");
+        $channel = $this->sut->getChannel("test/outbound/commands");
         $this->assertArrayHasKey(
             "name", $channel->channelBindings->toFunctionArguments(false)
         );
         $this->assertEquals(
-            "DaWaPack.DX.RpcCommands", $channel->channelBindings->toFunctionArguments(false)["name"]
+            "DaWaPack.DX.TestCommands", $channel->channelBindings->toFunctionArguments(false)["name"]
         );
         $this->assertArrayHasKey(
             "deliveryMode", $channel->operationBindings->toFunctionArguments(false)
@@ -46,15 +46,13 @@ class ContractsManagerTest extends AppTestCase
         $this->assertArrayHasKey(
             "messageType", $channel->messageBindings->toFunctionArguments(false)
         );
-        $this->assertEquals(
-            "#any", $channel->messageBindings->toFunctionArguments(false)["messageType"]
-        );
+        $this->assertEmpty($channel->messageBindings->toFunctionArguments(false)["messageType"]);
     }
 
     public function testSutCanReturnChannelsCollection()
     {
         $channels = $this->sut->getChannels();
         $this->assertInstanceOf(BrokerChannelsCollection::class, $channels);
-        $this->assertEquals(7, $channels->count());
+        $this->assertEquals(6, $channels->count());
     }
 }

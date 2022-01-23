@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace DaWaPack\Classes\Brokers\Amqp\Streamers;
 
+use DaWaPack\Classes\Brokers\Amqp\BrokerRequest;
+use DaWaPack\Classes\Brokers\Amqp\BrokerResponse;
 use DaWaPack\Classes\Brokers\Amqp\Handlers\AckNackHandlerInterface;
 use DaWaPack\Classes\Brokers\Exceptions\StreamerChannelClosedException;
-use DaWaPack\Classes\Messages\Request;
 
 interface PublisherStreamerInterface
 {
@@ -34,11 +35,12 @@ interface PublisherStreamerInterface
     public function setNackHandler(AckNackHandlerInterface $nackHandler): PublisherStreamerInterface;
 
     /**
-     * @param Request $request
+     * @param BrokerRequest|BrokerResponse $data
+     * @param string|null $channelName
      * @param int|float $publishAcknowledgeTimeout
      *
      * @return void
      * @throws StreamerChannelClosedException
      */
-    public function publish(Request $request, $publishAcknowledgeTimeout = 5): void;
+    public function publish($data, ?string $channelName = null, $publishAcknowledgeTimeout = 5): void;
 }

@@ -6,16 +6,19 @@ namespace DaWaPack\Classes\Brokers\Amqp\Streamers;
 use DaWaPack\Classes\Brokers\Amqp\Handlers\AckNackHandlerInterface;
 use DaWaPack\Classes\Brokers\Amqp\Handlers\NullAckHandler;
 use DaWaPack\Classes\Brokers\Amqp\Handlers\NullNackHandler;
-use DaWaPack\Classes\Messages\Request;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use Throwable;
 
 class PublisherStreamer extends AbstractStreamer implements PublisherStreamerInterface
 {
+    protected const LOGGER_COMPONENT_PREFIX = "publisher_streamer_";
+
     private AckNackHandlerInterface $ackHandler;
     private AckNackHandlerInterface $nackHandler;
     private AMQPChannel $streamerChannel;
+
+    protected string $operation = self::PUBLISH_OPERATION;
 
     /**
      * @inheritDoc
@@ -54,7 +57,7 @@ class PublisherStreamer extends AbstractStreamer implements PublisherStreamerInt
     /**
      * @inheritDoc
      */
-    public function publish(Request $request, $publishAcknowledgeTimeout = 5): void
+    public function publish($data, ?string $channelName = null, $publishAcknowledgeTimeout = 5): void
     {
         try {
             // get a new channel
@@ -63,13 +66,21 @@ class PublisherStreamer extends AbstractStreamer implements PublisherStreamerInt
             $this->enablePublishConfirmMode();
             // basic publish
             $this->streamerChannel->basic_publish(
-                $request->toAmqpMessage(),
-
+                ...array_values(
+                    $this->contractsManager->toBasicPublishFunctionArguments($channelName, $data)
+                )
             );
             // wait for acknowledgements - ack or nack
             $this->streamerChannel->wait_for_pending_acks($publishAcknowledgeTimeout);
         } catch (Throwable $reason) {
-
+            $this->logger->error(
+                $reason->getMessage(),
+                [
+                    'component' => self::LOGGER_COMPONENT_PREFIX . "publish",
+                    'error' => $reason,
+                ]
+            );
+            throw $reason;
         }
         // close the channel
         if (isset($this->streamerChannel) && $this->streamerChannel->is_open()) {

@@ -35,12 +35,12 @@ return [
         'asyncapi' => [
             'driver' => 'filesystem',
             'paths' => [
-                'source' => '/var/www/vendor/dawapack/asyncapi-contract-sample/src',
-                'validator' => '/var/www/vendor/dawapack/asyncapi-contract-sample/src/json-schemas/bindings/amqp'
+                'source' => '/var/www/tests/app/Brokers/Amqp/Fixtures/Contract',
+                'validator' => '/var/www/tests/app/Brokers/Amqp/Fixtures/Contract/json-schemas/bindings/amqp'
             ],
             'definitions' => [
-                'contract' => 'dawapack.yml',
-                'infrastructure' => 'infrastructure.yml'
+                'contract' => 'tests-dawapack.yml',
+                'infrastructure' => 'tests-infrastructure.yml'
             ]
         ]
     ]
