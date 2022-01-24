@@ -176,8 +176,7 @@ abstract class AbstractMessageBag implements MessageBagInterface
     /**
      * @return string
      */
-    private
-    function encodeBody(): string
+    private function encodeBody(): string
     {
         $encodedBody = '';
         switch ($this->properties->content_type) {
@@ -224,8 +223,7 @@ abstract class AbstractMessageBag implements MessageBagInterface
      * @throws JsonException
      * @throws MessageBagFormatException
      */
-    private
-    function decodeBody($body)
+    private function decodeBody($body)
     {
         $decodedBody = $body;
         switch ($this->properties->content_type) {
@@ -266,8 +264,7 @@ abstract class AbstractMessageBag implements MessageBagInterface
      *
      * @return BagProperties
      */
-    private
-    function fulfillProperties(array $properties): BagProperties
+    private function fulfillProperties(array $properties): BagProperties
     {
         // content_type
         !isset($properties["content_type"]) && $this->setDefaultContentType($properties);
@@ -294,8 +291,7 @@ abstract class AbstractMessageBag implements MessageBagInterface
      *
      * @return BagProperties
      */
-    private
-    function decodeApplicationHeaders(array $properties): BagProperties
+    private function decodeApplicationHeaders(array $properties): BagProperties
     {
         if (!empty($properties["application_headers"]) && $properties["application_headers"] instanceof AMQPTable) {
             $properties["application_headers"] = $properties["application_headers"]->getNativeData();
@@ -304,50 +300,42 @@ abstract class AbstractMessageBag implements MessageBagInterface
         return new BagProperties($properties);
     }
 
-    private
-    function setDefaultContentType(&$properties)
+    private function setDefaultContentType(&$properties)
     {
         $properties["content_type"] = self::DEFAULT_CONTENT_TYPE;
     }
 
-    private
-    function setDefaultContentEncoding(&$properties)
+    private function setDefaultContentEncoding(&$properties)
     {
         $properties["content_encoding"] = self::DEFAULT_CONTENT_ENCODING;
     }
 
-    private
-    function setDefaultPriority(&$properties): void
+    private function setDefaultPriority(&$properties): void
     {
         $properties["priority"] = self::DEFAULT_PRIORITY;
     }
 
-    private
-    function setDefaultCorrelationId(&$properties): void
+    private function setDefaultCorrelationId(&$properties): void
     {
         $properties["correlation_id"] = (Uuid::uuid4())->toString();
     }
 
-    private
-    function setDefaultMessageId(&$properties): void
+    private function setDefaultMessageId(&$properties): void
     {
         $properties["message_id"] = (Uuid::uuid4())->toString();
     }
 
-    private
-    function setDefaultType(&$properties): void
+    private function setDefaultType(&$properties): void
     {
         $properties["type"] = self::DEFAULT_TYPE;
     }
 
-    private
-    function setDefaultDeliveryMode(&$properties)
+    private function setDefaultDeliveryMode(&$properties)
     {
         $properties["delivery_mode"] = self::DEFAULT_DELIVERY_MODE;
     }
 
-    private
-    function setDefaultApplicationHeaders(&$properties): void
+    private function setDefaultApplicationHeaders(&$properties): void
     {
         $properties["application_headers"] = $properties["application_headers"] ?? [];
         $properties["application_headers"]['version'] = self::DEFAULT_VERSION;
