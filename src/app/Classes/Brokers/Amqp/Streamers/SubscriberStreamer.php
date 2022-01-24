@@ -7,8 +7,8 @@ use DaWaPack\Classes\Brokers\Amqp\BrokerRequest;
 use DaWaPack\Classes\Brokers\Amqp\BrokerResponse;
 use DaWaPack\Classes\Brokers\Exceptions\StreamerChannelNameNotFoundException;
 use PhpAmqpLib\Channel\AMQPChannel;
-use PhpAmqpLib\Exception\AMQPTimeoutException;
 use PhpAmqpLib\Message\AMQPMessage;
+use Throwable;
 
 class SubscriberStreamer extends AbstractStreamer implements SubscriberStreamerInterface
 {
@@ -108,7 +108,12 @@ class SubscriberStreamer extends AbstractStreamer implements SubscriberStreamerI
      */
     public function get()
     {
-        return $this->data ?? null;
+        $data = $this->data ?? null;
+        if ($this->consumed()) {
+            unset($this->data);
+            $this->consumed = false;
+        }
+        return $data;
     }
 
     /**
@@ -135,7 +140,7 @@ class SubscriberStreamer extends AbstractStreamer implements SubscriberStreamerI
     {
         try {
             $this->streamChannel->wait(null, false, 0.5);
-        } catch (AMQPTimeoutException $reason) {
+        } catch (Throwable $reason) {
             // Rise this exception on timeout - this is a normal behaviour
         }
     }

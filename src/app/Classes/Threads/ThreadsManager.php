@@ -16,8 +16,8 @@ class ThreadsManager implements ThreadsManagerInterface
 {
 
     private const LOGGER_COMPONENT_PREFIX = "thread_manager_";
-    private const EVENTS_POOL_TIMEOUT_MS = 0.1;
-    private const LOOP_EACH_MS = 500;
+    private const EVENTS_POOL_TIMEOUT_MS = 1;
+    private const LOOP_EACH_MS = 100;
 
     private ThreadsConfigurationInterface $threadsConfiguration;
     private Events $events;
@@ -43,11 +43,8 @@ class ThreadsManager implements ThreadsManagerInterface
      */
     public function start(bool &$stopRequested): void
     {
-        // Spawning threads - see config/threads.php
-        $this->spawnThreads();
-
-        // Set the pool timeout in microseconds
-        $this->eventsSetTimeout(self::EVENTS_POOL_TIMEOUT_MS);
+        $this->threadsSetup();
+        $this->eventsSetup();
 
         $startAt = microtime(true);
         do {
@@ -118,10 +115,13 @@ class ThreadsManager implements ThreadsManagerInterface
             case EventType::Read:
                 $threadId = str_replace(array("-out", "-in"), "", $event->source);
                 $channel = $this->threads[$threadId]->getOutgoingChannel();
-                if ((new InterProcessCommunication($channel, $event))->handle()->isAborting()) {
+                $ipc = (new InterProcessCommunication($channel, $event))->handle();
+                if ($ipc->isRespawnRequested()) {
+                    $this->respawnThread($this->threads[$threadId]->getConfiguration());
+                }
+                if ($ipc->isAborting() || $ipc->isRespawnRequested()) {
                     unset($this->threads[$threadId]);
                     unset($this->channels[$threadId]);
-                    // exit switch
                     break;
                 }
                 $this->events->addChannel($channel);
@@ -138,7 +138,7 @@ class ThreadsManager implements ThreadsManagerInterface
     /**
      * @return void
      */
-    public function spawnThreads(): void
+    public function threadsSetup(): void
     {
         // Spawn infrastructure thread
         $this->threadsConfiguration->hasInfrastructureThread() && $this->spawnThread(
@@ -173,6 +173,17 @@ class ThreadsManager implements ThreadsManagerInterface
         }
     }
 
+    protected function respawnThread(array $configuration)
+    {
+        $threadConfiguration = new ThreadConfiguration($configuration);
+        /** @var ThreadInstance $threadInstance */
+        $threadInstance = app(ThreadInstanceInterface::class);
+        $threadInstance->setConfiguration($threadConfiguration);
+        // Spawn thread
+        $this->createAndStackNewThread($threadInstance, $threadConfiguration);
+
+    }
+
     protected function createAndStackNewThread(
         ThreadInstance $threadInstance,
         ThreadConfiguration $threadConfiguration
@@ -187,16 +198,13 @@ class ThreadsManager implements ThreadsManagerInterface
     }
 
     /**
-     * @param float $timeout
-     *
      * @return void
      */
-    protected function eventsSetTimeout(float $timeout): void
+    protected function eventsSetup(): void
     {
         // timeout must be in microseconds
-        $timeout = (int)($timeout * 1000);
         $this->events->setBlocking(true);
-        $this->events->setTimeout($timeout);
+        $this->events->setTimeout(self::EVENTS_POOL_TIMEOUT_MS);
     }
 
     /**

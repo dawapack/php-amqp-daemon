@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace DaWaPack\Classes\Brokers\Amqp\MessageBags;
 
+use DaWaPack\Classes\Brokers\Amqp\MessageBags\DTO\BagBindings;
 use DaWaPack\Classes\Brokers\Amqp\MessageBags\DTO\BagProperties;
 use PhpAmqpLib\Message\AMQPMessage;
 
@@ -21,11 +22,16 @@ interface MessageBagInterface
     public function getProperties(): BagProperties;
 
     /**
-     * @var mixed $body
+     * @param string $key
      *
-     * @return $this
+     * @return mixed|null
      */
-    public function setBody($body): self;
+    public function getBinding(string $key);
+
+    /**
+     * @return BagBindings
+     */
+    public function getBindings(): BagBindings;
 
     /**
      * @return mixed
@@ -57,6 +63,27 @@ interface MessageBagInterface
      * @return $this
      */
     public function setReplyTo(string $replyTo): self;
+
+    /**
+     * @param string $channelName
+     *
+     * @return $this
+     */
+    public function setChannelName(string $channelName): self;
+
+    /**
+     * @param string $exchangeName
+     *
+     * @return $this
+     */
+    public function setExchangeName(string $exchangeName): self;
+
+    /**
+     * @param string $queueName
+     *
+     * @return $this
+     */
+    public function setQueueName(string $queueName): self;
 
     /**
      * @return AMQPMessage

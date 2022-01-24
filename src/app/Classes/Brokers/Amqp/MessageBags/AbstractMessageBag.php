@@ -11,10 +11,12 @@ use JsonException;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 use Ramsey\Uuid\Uuid;
+use Throwable;
 
 abstract class AbstractMessageBag implements MessageBagInterface
 {
     public const DEFAULT_PRIORITY = 0;
+    public const DEFAULT_DELIVERY_MODE = 2;
     public const DEFAULT_TYPE = 'default';
     public const DEFAULT_CONTENT_TYPE = 'application/json';
     public const DEFAULT_CONTENT_ENCODING = 'UTF-8';
@@ -76,10 +78,17 @@ abstract class AbstractMessageBag implements MessageBagInterface
     /**
      * @inheritdoc
      */
-    public function setBody($body): self
+    public function getBinding(string $key)
     {
-        $this->body = $body;
-        return $this;
+        return $this->bindings->{$key} ?? null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBindings(): BagBindings
+    {
+        return $this->bindings;
     }
 
     /**
@@ -128,6 +137,33 @@ abstract class AbstractMessageBag implements MessageBagInterface
     /**
      * @inheritdoc
      */
+    public function setChannelName(string $channelName): self
+    {
+        $this->bindings->channelName = $channelName;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setExchangeName(string $exchangeName): self
+    {
+        $this->bindings->exchange = $exchangeName;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setQueueName(string $queueName): self
+    {
+        $this->bindings->queue = $queueName;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function toAmqpMessage(): AMQPMessage
     {
         $messageProperties = $this->properties->toArray();
@@ -140,7 +176,8 @@ abstract class AbstractMessageBag implements MessageBagInterface
     /**
      * @return string
      */
-    private function encodeBody(): string
+    private
+    function encodeBody(): string
     {
         $encodedBody = '';
         switch ($this->properties->content_type) {
@@ -161,6 +198,14 @@ abstract class AbstractMessageBag implements MessageBagInterface
                 $encodedBody = json_encode($this->body);
                 break;
             case self::GZIP_CONTENT_TYPE:
+                if (!is_string($this->body) && !is_array($this->body) && !is_object($this->body)) {
+                    throw new MessageBagFormatException(
+                        "body type mismatch string or array or object"
+                    );
+                }
+                if (is_array($this->body) || is_object($this->body)) {
+                    $this->body = json_encode($this->body);
+                }
                 $encodedBody = base64_encode(gzcompress($this->body));
                 break;
             default:
@@ -179,7 +224,8 @@ abstract class AbstractMessageBag implements MessageBagInterface
      * @throws JsonException
      * @throws MessageBagFormatException
      */
-    private function decodeBody($body)
+    private
+    function decodeBody($body)
     {
         $decodedBody = $body;
         switch ($this->properties->content_type) {
@@ -192,7 +238,13 @@ abstract class AbstractMessageBag implements MessageBagInterface
                 $decodedBody = json_decode($body, true, 64, JSON_THROW_ON_ERROR);
                 break;
             case self::GZIP_CONTENT_TYPE:
-                $decodedBody = gzuncompress(base64_decode($body));
+                try {
+                    $decodedBody = gzuncompress(base64_decode($body));
+                } catch (Throwable $reason) {
+                    throw new MessageBagFormatException(
+                        "body format mismatch '" . self::GZIP_CONTENT_TYPE . "'"
+                    );
+                }
                 break;
             case self::TEXT_CONTENT_TYPE:
                 if (!is_string($decodedBody)) {
@@ -214,7 +266,8 @@ abstract class AbstractMessageBag implements MessageBagInterface
      *
      * @return BagProperties
      */
-    private function fulfillProperties(array $properties): BagProperties
+    private
+    function fulfillProperties(array $properties): BagProperties
     {
         // content_type
         !isset($properties["content_type"]) && $this->setDefaultContentType($properties);
@@ -226,6 +279,8 @@ abstract class AbstractMessageBag implements MessageBagInterface
         !isset($properties["correlation_id"]) && $this->setDefaultCorrelationId($properties);
         // message_id
         !isset($properties["message_id"]) && $this->setDefaultMessageId($properties);
+        // delivery_mode
+        !isset($properties["delivery_mode"]) && $this->setDefaultDeliveryMode($properties);
         // type
         !isset($properties["type"]) && $this->setDefaultType($properties);
         // application_headers
@@ -239,45 +294,60 @@ abstract class AbstractMessageBag implements MessageBagInterface
      *
      * @return BagProperties
      */
-    private function decodeApplicationHeaders(array $properties): BagProperties
+    private
+    function decodeApplicationHeaders(array $properties): BagProperties
     {
         if (!empty($properties["application_headers"]) && $properties["application_headers"] instanceof AMQPTable) {
             $properties["application_headers"] = $properties["application_headers"]->getNativeData();
         }
+
         return new BagProperties($properties);
     }
 
-    private function setDefaultContentType(&$properties)
+    private
+    function setDefaultContentType(&$properties)
     {
         $properties["content_type"] = self::DEFAULT_CONTENT_TYPE;
     }
 
-    private function setDefaultContentEncoding(&$properties)
+    private
+    function setDefaultContentEncoding(&$properties)
     {
         $properties["content_encoding"] = self::DEFAULT_CONTENT_ENCODING;
     }
 
-    private function setDefaultPriority(&$properties): void
+    private
+    function setDefaultPriority(&$properties): void
     {
         $properties["priority"] = self::DEFAULT_PRIORITY;
     }
 
-    private function setDefaultCorrelationId(&$properties): void
+    private
+    function setDefaultCorrelationId(&$properties): void
     {
         $properties["correlation_id"] = (Uuid::uuid4())->toString();
     }
 
-    private function setDefaultMessageId(&$properties): void
+    private
+    function setDefaultMessageId(&$properties): void
     {
         $properties["message_id"] = (Uuid::uuid4())->toString();
     }
 
-    private function setDefaultType(&$properties): void
+    private
+    function setDefaultType(&$properties): void
     {
         $properties["type"] = self::DEFAULT_TYPE;
     }
 
-    private function setDefaultApplicationHeaders(&$properties): void
+    private
+    function setDefaultDeliveryMode(&$properties)
+    {
+        $properties["delivery_mode"] = self::DEFAULT_DELIVERY_MODE;
+    }
+
+    private
+    function setDefaultApplicationHeaders(&$properties): void
     {
         $properties["application_headers"] = $properties["application_headers"] ?? [];
         $properties["application_headers"]['version'] = self::DEFAULT_VERSION;

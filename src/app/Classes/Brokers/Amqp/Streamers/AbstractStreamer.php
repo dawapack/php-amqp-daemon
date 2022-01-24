@@ -76,7 +76,8 @@ abstract class AbstractStreamer implements StreamerInterface
         $this->contractsManager = $contractsManager;
         $this->logger = $logger;
         // enable heartbeat
-        $this->enableHeartbeat();
+        // TODO: investigate this - cause restart each 5 seconds
+        //$this->enableHeartbeat();
         // setup declare mapper arguments
         $this->transformDeclareMapperArguments();
     }

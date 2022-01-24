@@ -5,9 +5,11 @@ namespace DaWaPack\Tests\app\Brokers\Amqp\MessageBags;
 
 use DaWaPack\Classes\Brokers\Amqp\MessageBags\AbstractMessageBag;
 use DaWaPack\Classes\Brokers\Amqp\MessageBags\DTO\BagProperties;
+use DaWaPack\Classes\Brokers\Exceptions\MessageBagFormatException;
 use DaWaPack\Tests\AppTestCase;
 use PhpAmqpLib\Message\AMQPMessage;
 use Ramsey\Uuid\Uuid;
+use TypeError;
 
 class AbstractMessageBagTest extends AppTestCase
 {
@@ -61,22 +63,6 @@ class AbstractMessageBagTest extends AppTestCase
     /**
      * @return void
      */
-    public function testSutCanUpdateBody(): void
-    {
-        $body = $this->sut->getBody();
-        $this->assertIsArray($body);
-        $this->assertArrayHasKey("test", $body);
-
-        $this->sut->setBody(['modified_test' => 'this is a body']);
-
-        $body = $this->sut->getBody();
-        $this->assertIsArray($body);
-        $this->assertArrayHasKey("modified_test", $body);
-    }
-
-    /**
-     * @return void
-     */
     public function testSutCanSetMessageTypeProperty(): void
     {
         $this->assertEquals("default", $this->sut->getProperty("type"));
@@ -116,11 +102,11 @@ class AbstractMessageBagTest extends AppTestCase
      * @param mixed $message
      * @param array $properties
      *
-     * @dataProvider messageAndPropertiesDataProvider
+     * @dataProvider consumedMessageAndPropertiesDataProvider
      *
      * @return void
      */
-    public function testSutCanBeInitializedByConsumedMessage($message, $properties): void
+    public function testSutCanBeInitializedByConsumedMessage($message, array $properties): void
     {
         $AMQPMessage = new AMQPMessage($message, $properties);
         $AMQPMessage->setConsumerTag("any#consume#tag");
@@ -139,7 +125,7 @@ class AbstractMessageBagTest extends AppTestCase
     /**
      * @return array[][]
      */
-    public function messageAndPropertiesDataProvider(): array
+    public function consumedMessageAndPropertiesDataProvider(): array
     {
         return [
             [
@@ -148,6 +134,7 @@ class AbstractMessageBagTest extends AppTestCase
                     'content_type' => AbstractMessageBag::GZIP_CONTENT_TYPE,
                     'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
                     'priority' => 0,
+                    'delivery_mode' => 2,
                     'correlation_id' => (Uuid::uuid4())->toString(),
                     'message_id' => (Uuid::uuid4())->toString(),
                     'type' => 'doSomething',
@@ -159,6 +146,7 @@ class AbstractMessageBagTest extends AppTestCase
                     'content_type' => AbstractMessageBag::JSON_CONTENT_TYPE,
                     'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
                     'priority' => 0,
+                    'delivery_mode' => 2,
                     'correlation_id' => (Uuid::uuid4())->toString(),
                     'message_id' => (Uuid::uuid4())->toString(),
                     'type' => 'doSomething',
@@ -170,6 +158,260 @@ class AbstractMessageBagTest extends AppTestCase
                     'content_type' => AbstractMessageBag::TEXT_CONTENT_TYPE,
                     'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
                     'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @param mixed $message
+     * @param array $properties
+     *
+     * @dataProvider messageAndPropertiesDataProvider
+     *
+     * @return void
+     */
+    public function testSutCanBeInitialized($message, array $properties): void
+    {
+        $sut = new class ($message, $properties) extends AbstractMessageBag {
+        };
+        $properties = $sut->toAmqpMessage()->get_properties();
+        $this->assertEquals("doSomething", $properties["type"]);
+        $this->assertEquals("UTF-8", $properties["content_encoding"]);
+    }
+
+    /**
+     * @return array[][]
+     */
+    public function messageAndPropertiesDataProvider(): array
+    {
+        return [
+            [
+                "gzip this string",
+                [
+                    'content_type' => AbstractMessageBag::GZIP_CONTENT_TYPE,
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ],
+            [
+                ["gzip" => "this array"],
+                [
+                    'content_type' => AbstractMessageBag::GZIP_CONTENT_TYPE,
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ],
+            [
+                (object)["gzip" => "this object"],
+                [
+                    'content_type' => AbstractMessageBag::GZIP_CONTENT_TYPE,
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ],
+            [
+                ["json" => "encode this array"],
+                [
+                    'content_type' => AbstractMessageBag::JSON_CONTENT_TYPE,
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ],
+            [
+                (object)["json" => "encode this object"],
+                [
+                    'content_type' => AbstractMessageBag::JSON_CONTENT_TYPE,
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ],
+            [
+                'test ok',
+                [
+                    'content_type' => AbstractMessageBag::TEXT_CONTENT_TYPE,
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @param mixed $message
+     * @param array $properties
+     *
+     * @dataProvider wrongConsumedMessageAndPropertiesDataProvider
+     *
+     * @return void
+     */
+    public function testSutInitializationByConsumedMessageMustFailWithMessageBagFormatException($message, array $properties): void
+    {
+        $this->expectException(MessageBagFormatException::class);
+        $AMQPMessage = new AMQPMessage($message, $properties);
+        $AMQPMessage->setConsumerTag("any#consume#tag");
+
+        new class (
+            $AMQPMessage->getBody(),
+            $AMQPMessage->get_properties(),
+            $AMQPMessage->getConsumerTag()
+        ) extends AbstractMessageBag {
+        };
+
+    }
+
+    /**
+     * @return array[][]
+     */
+    public function wrongConsumedMessageAndPropertiesDataProvider(): array
+    {
+        return [
+            [
+                ["test" => __METHOD__],
+                [
+                    'content_type' => 'unknown',
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ],
+            [
+                ["test" => __METHOD__],
+                [
+                    'content_type' => AbstractMessageBag::GZIP_CONTENT_TYPE,
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ],
+            [
+                ["test" => __METHOD__],
+                [
+                    'content_type' => AbstractMessageBag::JSON_CONTENT_TYPE,
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ],
+            [
+                ["test" => __METHOD__],
+                [
+                    'content_type' => AbstractMessageBag::TEXT_CONTENT_TYPE,
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @param mixed $message
+     * @param array $properties
+     *
+     * @dataProvider wrongMessageAndPropertiesDataProvider
+     *
+     * @return void
+     */
+    public function testSutMustFailWithMessageBagFormatExceptionWhenTryingToConvertBagToAmqpMessage(
+        $message, array $properties
+    ): void {
+        $this->expectException(MessageBagFormatException::class);
+        $sut = new class($message, $properties) extends AbstractMessageBag {
+        };
+        $sut->toAmqpMessage();
+
+    }
+
+    /**
+     * @return array[][]
+     */
+    public function wrongMessageAndPropertiesDataProvider(): array
+    {
+        return [
+            [
+                ["test" => __METHOD__],
+                [
+                    'content_type' => 'unknown',
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ],
+            [
+                false,
+                [
+                    'content_type' => AbstractMessageBag::GZIP_CONTENT_TYPE,
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ],
+            [
+                10,
+                [
+                    'content_type' => AbstractMessageBag::JSON_CONTENT_TYPE,
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
+                    'correlation_id' => (Uuid::uuid4())->toString(),
+                    'message_id' => (Uuid::uuid4())->toString(),
+                    'type' => 'doSomething',
+                ]
+            ],
+            [
+                ["test" => __METHOD__],
+                [
+                    'content_type' => AbstractMessageBag::TEXT_CONTENT_TYPE,
+                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'priority' => 0,
+                    'delivery_mode' => 2,
                     'correlation_id' => (Uuid::uuid4())->toString(),
                     'message_id' => (Uuid::uuid4())->toString(),
                     'type' => 'doSomething',

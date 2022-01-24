@@ -33,7 +33,9 @@ class BrokerResponseTest extends AppTestCase
 
         $this->sut = new BrokerResponse(
             ["test" => __METHOD__],
-            []
+            [
+
+            ]
         );
 
         // add custom PublisherStreamerInterface to container

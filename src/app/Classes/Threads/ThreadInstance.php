@@ -4,6 +4,13 @@ declare(strict_types=1);
 namespace DaWaPack\Classes\Threads;
 
 use DaWaPack\Chassis\Application;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
+use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManager;
+use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManagerInterface;
+use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsValidator;
+use DaWaPack\Classes\Brokers\Amqp\Streamers\SubscriberStreamer;
+use DaWaPack\Classes\Brokers\Amqp\Streamers\SubscriberStreamerInterface;
 use DaWaPack\Classes\Threads\Configuration\ThreadConfiguration;
 use DaWaPack\Classes\Threads\DTO\JobsProcessed;
 use DaWaPack\Classes\Threads\Exceptions\ThreadInstanceException;
@@ -14,6 +21,8 @@ use parallel\Channel;
 use parallel\Channel\Error\Existence;
 use parallel\Future;
 use parallel\Runtime;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Throwable;
 use function DaWaPack\Chassis\Helpers\app;
@@ -118,16 +127,6 @@ class ThreadInstance implements ThreadInstanceInterface
     }
 
     /**
-     * @param string|null $reason
-     *
-     * @return bool
-     */
-    public function respawn(?string $reason = null): bool
-    {
-        return true;
-    }
-
-    /**
      * @param string $name
      * @param int $capacity
      *
@@ -188,29 +187,55 @@ class ThreadInstance implements ThreadInstanceInterface
                 static function (
                     string $threadId,
                     string $basePath,
-                    string $brokerChannel,
+                    array $threadConfiguration,
                     Channel $incomingChannel,
                     Channel $outgoingChannel
                 ): void {
                     // Define application in Closure as worker
                     define('RUNNER_TYPE', 'worker');
+
                     /** @var Application $app */
                     $app = require $basePath . '/bootstrap/app.php';
+
                     // Load configuration files
                     $app->withConfig("broker");
+                    $app->withConfig("threads");
+
                     // Add aliases
-                    $app->add('brokerChannel', $brokerChannel);
                     $app->add('incomingChannel', $incomingChannel);
                     $app->add('outgoingChannel', $outgoingChannel);
                     $app->add('threadId', $threadId);
-                    // Add singleton
+                    $app->add('threadConfiguration', $threadConfiguration);
+
+                    // Add singletons
                     $app->add(WorkerInterface::class, Worker::class);
+                    $app->add(BrokerConfigurationInterface::class, BrokerConfiguration::class)
+                        ->addArgument($app->config("broker"));
+                    $app->add(ContractsManagerInterface::class, function ($app) {
+                        return new ContractsManager(
+                            $app->get(BrokerConfigurationInterface::class),
+                            new ContractsValidator()
+                        );
+                    })->addArgument($app);
+                    $app->add('brokerStreamConnection', function ($app) {
+                        return new AMQPStreamConnection(
+                            ...array_values($app->get(ContractsManagerInterface::class)->toStreamConnectionFunctionArguments())
+                        );
+                    })->addArgument($app)->setShared(false);
+                    $app->add(SubscriberStreamerInterface::class, function ($app){
+                        return new SubscriberStreamer(
+                            $app->get('brokerStreamConnection'),
+                            $app->get(ContractsManagerInterface::class),
+                            $app->get(LoggerInterface::class)
+                        );
+                    })->addArgument($app)->setShared(false);
+
                     // Start processing jobs
                     (new Kernel($app))->boot();
                 }, [
                     $threadId,
                     $basePath,
-                    $this->threadConfiguration->channelName,
+                    $this->threadConfiguration->toArray(),
                     $this->incomingChannel,
                     $this->outgoingChannel
                 ]
