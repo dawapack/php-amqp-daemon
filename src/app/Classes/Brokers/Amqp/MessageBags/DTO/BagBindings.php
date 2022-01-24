@@ -28,11 +28,6 @@ class BagBindings extends DataTransferObject
      */
     public ?string $routingKey;
 
-//    /**
-//     * @var string|null
-//     */
-//    public ?string $replyTo;
-
     /**
      * @var string|null
      */

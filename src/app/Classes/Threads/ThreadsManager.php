@@ -6,6 +6,7 @@ namespace DaWaPack\Classes\Threads;
 use DaWaPack\Classes\Messages\InterProcessCommunication;
 use DaWaPack\Classes\Threads\Configuration\ThreadConfiguration;
 use DaWaPack\Classes\Threads\Configuration\ThreadsConfigurationInterface;
+use DaWaPack\Classes\Threads\Exceptions\ThreadInstanceException;
 use parallel\Events;
 use parallel\Events\Error\Timeout;
 use parallel\Events\Event;
@@ -40,6 +41,9 @@ class ThreadsManager implements ThreadsManagerInterface
      * @param bool $stopRequested
      *
      * @return void
+     * @throws ThreadInstanceException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function start(bool &$stopRequested): void
     {
@@ -108,6 +112,9 @@ class ThreadsManager implements ThreadsManagerInterface
      * @param Event $event
      *
      * @return void
+     * @throws ThreadInstanceException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function eventHandler(Event $event): void
     {
@@ -137,6 +144,9 @@ class ThreadsManager implements ThreadsManagerInterface
 
     /**
      * @return void
+     * @throws ThreadInstanceException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function threadsSetup(): void
     {
@@ -161,6 +171,9 @@ class ThreadsManager implements ThreadsManagerInterface
      * @param ThreadConfiguration $threadConfiguration
      *
      * @return void
+     * @throws ThreadInstanceException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function spawnThread(ThreadConfiguration $threadConfiguration): void
     {
@@ -173,7 +186,15 @@ class ThreadsManager implements ThreadsManagerInterface
         }
     }
 
-    protected function respawnThread(array $configuration)
+    /**
+     * @param array $configuration
+     *
+     * @return void
+     * @throws ThreadInstanceException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function respawnThread(array $configuration): void
     {
         $threadConfiguration = new ThreadConfiguration($configuration);
         /** @var ThreadInstance $threadInstance */
@@ -181,9 +202,15 @@ class ThreadsManager implements ThreadsManagerInterface
         $threadInstance->setConfiguration($threadConfiguration);
         // Spawn thread
         $this->createAndStackNewThread($threadInstance, $threadConfiguration);
-
     }
 
+    /**
+     * @param ThreadInstance $threadInstance
+     * @param ThreadConfiguration $threadConfiguration
+     *
+     * @return void
+     * @throws ThreadInstanceException
+     */
     protected function createAndStackNewThread(
         ThreadInstance $threadInstance,
         ThreadConfiguration $threadConfiguration
