@@ -13,6 +13,7 @@ class InterProcessCommunication
 
     private IPCMessage $message;
     private bool $aborting = false;
+    private bool $respawning = false;
     private ?Event $event;
     private ?Channel $channel;
 
@@ -39,6 +40,8 @@ class InterProcessCommunication
             case "aborting":
                 $this->aborting = true;
                 break;
+            case "respawn":
+                $this->respawning = true;
             default:
                 //
                 // TODO: implements event/listener pattern here to handle other methods
@@ -86,5 +89,13 @@ class InterProcessCommunication
     public function isAborting(): bool
     {
         return $this->aborting;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRespawnRequested(): bool
+    {
+        return $this->respawning;
     }
 }

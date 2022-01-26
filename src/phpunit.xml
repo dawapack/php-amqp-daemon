@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="./tests/bootstrap.php"
+         executionOrder="default"
+         verbose="true"
+         colors="true"
+         testdox="true"
+>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <const name="RUNNER_TYPE" value="testing"/>
+        <const name="RUNNER_CHANNEL" value="general/testing/channel"/>
+    </php>
+    <testsuites>
+        <testsuite name="application-test-suite">
+            <directory suffix="Test.php">./tests/app</directory>
+        </testsuite>
+        <testsuite name="chassis-test-suite">
+            <directory suffix="Test.php">./tests/chassis</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./app</directory>
+            <directory suffix=".php">./chassis</directory>
+        </include>
+    </coverage>
+</phpunit>

@@ -5,8 +5,8 @@ namespace DaWaPack;
 
 use DaWaPack\Chassis\Classes\Base\KernelBase;
 use DaWaPack\Chassis\Helpers\Pcntl\PcntlSignals;
-use DaWaPack\Interfaces\ThreadsManagerInterface;
-use DaWaPack\Interfaces\WorkerInterface;
+use DaWaPack\Classes\Threads\ThreadsManagerInterface;
+use DaWaPack\Classes\Workers\WorkerInterface;
 
 class Kernel extends KernelBase
 {
@@ -18,10 +18,16 @@ class Kernel extends KernelBase
      */
     public function boot(): void
     {
-        if (RUNNER_TYPE === "worker") {
-            ($this->app->get(WorkerInterface::class))->start();
-        } elseif (RUNNER_TYPE === "daemon") {
-            ($this->app->get(ThreadsManagerInterface::class))->start($this->stopRequested);
+        switch (RUNNER_TYPE) {
+            case "worker":
+                ($this->app->get(WorkerInterface::class))->start();
+                break;
+            case "daemon":
+                ($this->app->get(ThreadsManagerInterface::class))->start($this->stopRequested);
+                break;
+            case "cron":
+                // TODO: implement cron worker type
+                return;
         }
     }
 

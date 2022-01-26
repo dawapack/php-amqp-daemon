@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace DaWaPack\Providers;
 
 use DaWaPack\Classes\Threads\ThreadInstance;
-use DaWaPack\Interfaces\ThreadInstanceInterface;
+use DaWaPack\Classes\Threads\ThreadInstanceInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 
 class ThreadInstanceServiceProvider extends AbstractServiceProvider

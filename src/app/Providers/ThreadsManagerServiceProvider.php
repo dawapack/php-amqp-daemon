@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace DaWaPack\Providers;
 
+use DaWaPack\Classes\Threads\Configuration\ThreadsConfigurationInterface;
 use DaWaPack\Classes\Threads\ThreadsManager;
-use DaWaPack\Interfaces\ThreadsConfigurationInterface;
-use DaWaPack\Interfaces\ThreadsManagerInterface;
+use DaWaPack\Classes\Threads\ThreadsManagerInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use parallel\Events;
 

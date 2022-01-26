@@ -48,7 +48,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @inheritDoc
      */
-    public function get(string $key)
+    public function get(string $key, $default = null)
     {
         // try to autoload alias
         $alias = $this->getAliasFromKey($key);
@@ -58,7 +58,7 @@ class Configuration implements ConfigurationInterface
         // return key if exists
         return $this->configuration->exists($key)
             ? $this->configuration->get($key)
-            : null;
+            : $default;
     }
 
     /**
@@ -170,7 +170,7 @@ class Configuration implements ConfigurationInterface
         if (!file_exists($definitionsFilePath)) {
             throw new ConfigurationException("definitions file for alias '$fileName' not found");
         }
-        return require_once $definitionsFilePath;
+        return require $definitionsFilePath;
     }
 
     /**

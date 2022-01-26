@@ -133,7 +133,7 @@ class Application extends Container
     private function bootstrapContainer(): void
     {
         // Add singletons by his interface
-        $this->add(LoggerInterface::class, new LoggerFactory($this->basePath));
+        $this->add(LoggerInterface::class, (new LoggerFactory($this->basePath))());
 
         // Add singletons by alias
         $this->add('config', new Configuration(

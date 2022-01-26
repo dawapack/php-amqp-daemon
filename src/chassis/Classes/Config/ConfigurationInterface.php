@@ -8,10 +8,11 @@ interface ConfigurationInterface
 
     /**
      * @param string $key
+     * @param mixed $default
      *
      * @return mixed|null
      */
-    public function get(string $key);
+    public function get(string $key, $default = null);
 
     /**
      * @param array|string $alias

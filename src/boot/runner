@@ -3,11 +3,13 @@
 declare(strict_types=1);
 
 use DaWaPack\Chassis\Application;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
+use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
 use DaWaPack\Classes\Threads\Configuration\ThreadsConfiguration;
+use DaWaPack\Classes\Threads\Configuration\ThreadsConfigurationInterface;
 use DaWaPack\Kernel;
 use DaWaPack\Providers\ThreadInstanceServiceProvider;
 use DaWaPack\Providers\ThreadsManagerServiceProvider;
-use DaWaPack\Interfaces\ThreadsConfigurationInterface;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +33,9 @@ $app->withConfig("threads");
 */
 $app->add(ThreadsConfigurationInterface::class, ThreadsConfiguration::class)
     ->addArgument($app->get("config")->get("threads"));
+
+$app->add(BrokerConfigurationInterface::class, BrokerConfiguration::class)
+    ->addArgument($app->get("config")->get("broker"));
 
 /*
 |--------------------------------------------------------------------------

@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace DaWaPack\Classes\Threads\Configuration;
 
-use DaWaPack\Interfaces\ThreadsConfigurationInterface;
-
 class ThreadsConfiguration implements ThreadsConfigurationInterface
 {
 
