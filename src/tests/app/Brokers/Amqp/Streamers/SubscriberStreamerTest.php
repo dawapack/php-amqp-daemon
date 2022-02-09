@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Streamers;
 
+use DaWaPack\Classes\Brokers\Amqp\BrokerRequest;
 use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManagerInterface;
 use DaWaPack\Classes\Brokers\Amqp\Streamers\SubscriberStreamer;
-use DaWaPack\Classes\Messages\Response;
 use DaWaPack\Tests\AppTestCase;
 use Psr\Log\LoggerInterface;
 
@@ -31,8 +31,8 @@ class SubscriberStreamerTest extends AppTestCase
     public function testSutCanSetHandler()
     {
         $this->assertNull($this->sut->getHandler());
-        $this->sut->setHandler(Response::class);
-        $this->assertEquals(Response::class, $this->sut->getHandler());
+        $this->sut->setHandler(BrokerRequest::class);
+        $this->assertEquals(BrokerRequest::class, $this->sut->getHandler());
     }
 
     public function testSutCanSetQosPrefetchSize()
