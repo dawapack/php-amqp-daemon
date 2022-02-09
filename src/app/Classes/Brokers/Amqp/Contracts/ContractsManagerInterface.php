@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Brokers\Amqp\Contracts;
@@ -12,7 +13,6 @@ use DaWaPack\Classes\Brokers\Exceptions\StreamerChannelNameNotFoundException;
 
 interface ContractsManagerInterface
 {
-
     /**
      * @param string $channelName
      *

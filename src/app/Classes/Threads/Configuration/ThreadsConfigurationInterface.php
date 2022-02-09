@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Threads\Configuration;
 
 interface ThreadsConfigurationInterface
 {
-
     /**
      * Return the limit of maximum jobs before respawn thread
      *

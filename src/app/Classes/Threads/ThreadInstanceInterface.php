@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Threads;
@@ -9,7 +10,6 @@ use parallel\Future;
 
 interface ThreadInstanceInterface
 {
-
     /**
      * @param ThreadConfiguration $threadConfiguration
      *

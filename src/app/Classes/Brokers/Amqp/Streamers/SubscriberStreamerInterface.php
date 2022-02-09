@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Brokers\Amqp\Streamers;
@@ -10,7 +11,6 @@ use DaWaPack\Classes\Brokers\Exceptions\StreamerChannelNameNotFoundException;
 
 interface SubscriberStreamerInterface
 {
-
     /**
      * Set message bag handler - BrokerRequest or BrokerResponse
      *

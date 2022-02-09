@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DaWaPack\Classes\Brokers\Amqp\Streamers;
 
 use Closure;
@@ -12,7 +14,6 @@ use Throwable;
 
 class SubscriberStreamer extends AbstractStreamer implements SubscriberStreamerInterface
 {
-
     private const QOS_PREFETCH_SIZE = 0;
     private const QOS_PREFETCH_COUNT = 1;
     // TODO: investigate this - set to true rise an error RabbitMQ side

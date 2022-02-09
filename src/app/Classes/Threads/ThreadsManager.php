@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Threads;
@@ -11,11 +12,11 @@ use parallel\Events;
 use parallel\Events\Error\Timeout;
 use parallel\Events\Event;
 use parallel\Events\Event\Type as EventType;
+
 use function DaWaPack\Chassis\Helpers\app;
 
 class ThreadsManager implements ThreadsManagerInterface
 {
-
     private const LOGGER_COMPONENT_PREFIX = "thread_manager_";
     private const EVENTS_POOL_TIMEOUT_MS = 1;
     private const LOOP_EACH_MS = 100;
@@ -62,7 +63,6 @@ class ThreadsManager implements ThreadsManagerInterface
             $this->loopWait(self::LOOP_EACH_MS, $startAt);
             $startAt = microtime(true);
         } while (true);
-
     }
 
     /**

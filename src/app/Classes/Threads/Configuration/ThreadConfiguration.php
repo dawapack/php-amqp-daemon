@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Threads\Configuration;
@@ -7,7 +8,6 @@ use Spatie\DataTransferObject\DataTransferObject;
 
 class ThreadConfiguration extends DataTransferObject
 {
-
     /**
      * @var string
      */

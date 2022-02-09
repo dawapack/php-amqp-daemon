@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Brokers\Amqp\Contracts;
@@ -11,8 +12,8 @@ use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\BrokerChannelsCollection;
 use DaWaPack\Classes\Brokers\Amqp\Contracts\Exceptions\ContractsValidatorException;
 use DaWaPack\Classes\Brokers\Exceptions\StreamerChannelNameNotFoundException;
 use Symfony\Component\Yaml\Yaml;
+
 use function DaWaPack\Chassis\Helpers\objectToArrayRecursive;
-use function PHPUnit\Framework\isNull;
 
 class ContractsManager implements ContractsManagerInterface
 {

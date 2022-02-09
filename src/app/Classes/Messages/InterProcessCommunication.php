@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Messages;
@@ -10,7 +11,6 @@ use Throwable;
 
 class InterProcessCommunication
 {
-
     private IPCMessage $message;
     private bool $aborting = false;
     private bool $respawning = false;
@@ -42,10 +42,9 @@ class InterProcessCommunication
                 break;
             case "respawn":
                 $this->respawning = true;
+                break;
             default:
-                //
                 // TODO: implements event/listener pattern here to handle other methods
-                //
                 break;
         }
 

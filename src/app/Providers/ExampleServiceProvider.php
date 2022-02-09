@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Providers;
@@ -9,7 +10,6 @@ use Psr\Log\LoggerInterface;
 
 class ExampleServiceProvider extends AbstractServiceProvider implements BootableServiceProviderInterface
 {
-
     /**
      * In much the same way, this method has access to the container
      * itself and can interact with it however you wish, the difference

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Brokers\Amqp\Contracts;
@@ -36,8 +37,9 @@ class ContractsValidator
             foreach (self::getAllSchemaNames() as $schemaName) {
                 $filePath = $path . DIRECTORY_SEPARATOR . $schemaName;
                 if (file_exists($filePath)) {
-                    $this->validator->resolver()->registerFile(self::API_URL . DIRECTORY_SEPARATOR . $schemaName,
-                        $filePath);
+                    $this->validator
+                        ->resolver()
+                        ->registerFile(self::API_URL . DIRECTORY_SEPARATOR . $schemaName, $filePath);
                 }
             }
         }

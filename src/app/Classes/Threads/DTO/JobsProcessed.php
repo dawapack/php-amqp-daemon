@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Threads\DTO;
@@ -10,5 +11,4 @@ use Spatie\DataTransferObject\DataTransferObjectCollection;
  */
 class JobsProcessed extends DataTransferObjectCollection
 {
-
 }

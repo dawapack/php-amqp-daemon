@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Threads;
@@ -25,18 +26,18 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Throwable;
+
 use function DaWaPack\Chassis\Helpers\app;
 
 class ThreadInstance implements ThreadInstanceInterface
 {
-
     private const LOGGER_COMPONENT_PREFIX = "thread_instance_";
 
     private ThreadConfiguration $threadConfiguration;
     private JobsProcessed $jobsProcessed;
-    private Future $future;
-    private Channel $outgoingChannel;
-    private Channel $incomingChannel;
+    private ?Future $future;
+    private ?Channel $outgoingChannel;
+    private ?Channel $incomingChannel;
 
     public function __destruct()
     {
@@ -97,27 +98,16 @@ class ThreadInstance implements ThreadInstanceInterface
     {
         $threadId = (Uuid::uuid4())->toString();
 
-        // Create thread outgoing channel
-        if (($this->incomingChannel = $this->createIncomingChannel(
-                $threadId . "-in",
-                Channel::Infinite)
-            ) === false
-        ) {
-            throw new ThreadInstanceException("creating incoming channel for thread instance fail");
-        }
-
-        // Create thread outgoing channel
-        if (($this->outgoingChannel = $this->createOutgoingChannel(
-                $threadId . "-out",
-                Channel::Infinite)
-            ) === false
-        ) {
-            $this->incomingChannel->close();
-            throw new ThreadInstanceException("creating outgoing channel for thread instance fail");
+        // Create thread incoming & outgoing channels
+        $this->incomingChannel = $this->createIncomingChannel($threadId . "-in", Channel::Infinite);
+        $this->outgoingChannel = $this->createOutgoingChannel($threadId . "-out", Channel::Infinite);
+        if (is_null($this->incomingChannel) || is_null($this->outgoingChannel)) {
+            throw new ThreadInstanceException("creating channels for thread instance fail");
         }
 
         // Create future
-        if (($this->future = $this->createFuture($threadId)) === false) {
+        $this->future = $this->createFuture($threadId);
+        if (is_null($this->future)) {
             $this->incomingChannel->close();
             $this->outgoingChannel->close();
             throw new ThreadInstanceException("creating future for thread instance fail");
@@ -175,13 +165,13 @@ class ThreadInstance implements ThreadInstanceInterface
     /**
      * @param string $threadId
      *
-     * @return Future|bool
+     * @return Future|null
      */
-    private function createFuture(string $threadId)
+    private function createFuture(string $threadId): ?Future
     {
         // Create parallel runtime - inject vendor autoload as bootstrap
-        $basePath = app('basePath');
         try {
+            $basePath = app('basePath');
             // Create parallel future
             return (new Runtime($basePath . "/vendor/autoload.php"))->run(
                 static function (
@@ -218,11 +208,12 @@ class ThreadInstance implements ThreadInstanceInterface
                         );
                     })->addArgument($app);
                     $app->add('brokerStreamConnection', function ($app) {
-                        return new AMQPStreamConnection(
-                            ...array_values($app->get(ContractsManagerInterface::class)->toStreamConnectionFunctionArguments())
+                        $streamConnectionArguments = array_values(
+                            $app->get(ContractsManagerInterface::class)->toStreamConnectionFunctionArguments()
                         );
+                        return new AMQPStreamConnection(...$streamConnectionArguments);
                     })->addArgument($app)->setShared(false);
-                    $app->add(SubscriberStreamerInterface::class, function ($app){
+                    $app->add(SubscriberStreamerInterface::class, function ($app) {
                         return new SubscriberStreamer(
                             $app->get('brokerStreamConnection'),
                             $app->get(ContractsManagerInterface::class),
@@ -232,7 +223,8 @@ class ThreadInstance implements ThreadInstanceInterface
 
                     // Start processing jobs
                     (new Kernel($app))->boot();
-                }, [
+                },
+                [
                     $threadId,
                     $basePath,
                     $this->threadConfiguration->toArray(),
@@ -250,6 +242,6 @@ class ThreadInstance implements ThreadInstanceInterface
             );
         }
 
-        return false;
+        return null;
     }
 }
