@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\MessageBags;
 
 use DaWaPack\Classes\Brokers\Amqp\MessageBags\AbstractMessageBag;
+use DaWaPack\Classes\Brokers\Amqp\MessageBags\DTO\BagBindings;
 use DaWaPack\Classes\Brokers\Amqp\MessageBags\DTO\BagProperties;
 use DaWaPack\Classes\Brokers\Exceptions\MessageBagFormatException;
 use DaWaPack\Tests\AppTestCase;
 use PhpAmqpLib\Message\AMQPMessage;
 use Ramsey\Uuid\Uuid;
-use TypeError;
 
 class AbstractMessageBagTest extends AppTestCase
 {
@@ -263,6 +264,119 @@ class AbstractMessageBagTest extends AppTestCase
                 ]
             ]
         ];
+    }
+
+    /**
+     * @return void
+     */
+    public function testSutCanSetTheChannelName(): void
+    {
+        $message = 'test ok';
+        $properties = [
+            'content_type' => AbstractMessageBag::TEXT_CONTENT_TYPE,
+            'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+            'priority' => 0,
+            'delivery_mode' => 2,
+            'correlation_id' => (Uuid::uuid4())->toString(),
+            'message_id' => (Uuid::uuid4())->toString(),
+            'type' => 'doSomething',
+        ];
+
+        $sut = new class ($message, $properties) extends AbstractMessageBag {
+        };
+
+        $sut->setChannelName('my/channel/name');
+        $this->assertEquals('my/channel/name', $sut->getBinding('channelName'));
+    }
+
+    /**
+     * @return void
+     */
+    public function testSutCanSetTheExchangeName(): void
+    {
+        $message = 'test ok';
+        $properties = [
+            'content_type' => AbstractMessageBag::TEXT_CONTENT_TYPE,
+            'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+            'priority' => 0,
+            'delivery_mode' => 2,
+            'correlation_id' => (Uuid::uuid4())->toString(),
+            'message_id' => (Uuid::uuid4())->toString(),
+            'type' => 'doSomething',
+        ];
+
+        $sut = new class ($message, $properties) extends AbstractMessageBag {
+        };
+
+        $sut->setExchangeName('my_exchange_name');
+        $this->assertEquals('my_exchange_name', $sut->getBinding('exchange'));
+    }
+
+    /**
+     * @return void
+     */
+    public function testSutCanSetTheQueueName(): void
+    {
+        $message = 'test ok';
+        $properties = [
+            'content_type' => AbstractMessageBag::TEXT_CONTENT_TYPE,
+            'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+            'priority' => 0,
+            'delivery_mode' => 2,
+            'correlation_id' => (Uuid::uuid4())->toString(),
+            'message_id' => (Uuid::uuid4())->toString(),
+            'type' => 'doSomething',
+        ];
+
+        $sut = new class ($message, $properties) extends AbstractMessageBag {
+        };
+
+        $sut->setQueueName('my_queue_name');
+        $this->assertEquals('my_queue_name', $sut->getBinding('queue'));
+    }
+
+    /**
+     * @return void
+     */
+    public function testSutCanGetBagBindings(): void
+    {
+        $message = 'test ok';
+        $properties = [
+            'content_type' => AbstractMessageBag::TEXT_CONTENT_TYPE,
+            'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+            'priority' => 0,
+            'delivery_mode' => 2,
+            'correlation_id' => (Uuid::uuid4())->toString(),
+            'message_id' => (Uuid::uuid4())->toString(),
+            'type' => 'doSomething',
+        ];
+
+        $sut = new class ($message, $properties) extends AbstractMessageBag {
+        };
+
+        $this->assertInstanceOf(BagBindings::class, $sut->getBindings());
+    }
+
+    /**
+     * @return void
+     */
+    public function testSutCanGetBody(): void
+    {
+        $message = 'testSutCanGetBody';
+        $properties = [
+            'content_type' => AbstractMessageBag::TEXT_CONTENT_TYPE,
+            'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+            'priority' => 0,
+            'delivery_mode' => 2,
+            'correlation_id' => (Uuid::uuid4())->toString(),
+            'message_id' => (Uuid::uuid4())->toString(),
+            'type' => 'doSomething',
+        ];
+
+        $sut = new class ($message, $properties) extends AbstractMessageBag {
+        };
+
+        $this->assertEquals($message, $sut->getBody());
     }
 
     /**

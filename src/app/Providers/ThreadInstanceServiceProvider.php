@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Providers;
@@ -9,12 +10,19 @@ use League\Container\ServiceProvider\AbstractServiceProvider;
 
 class ThreadInstanceServiceProvider extends AbstractServiceProvider
 {
-
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
     public function provides(string $id): bool
     {
         return $id === ThreadInstanceInterface::class;
     }
 
+    /**
+     * @return void
+     */
     public function register(): void
     {
         // add key/value pair

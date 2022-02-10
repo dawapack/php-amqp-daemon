@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Providers;
@@ -11,12 +12,19 @@ use parallel\Events;
 
 class ThreadsManagerServiceProvider extends AbstractServiceProvider
 {
-
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
     public function provides(string $id): bool
     {
         return $id === ThreadsManagerInterface::class;
     }
 
+    /**
+     * @return void
+     */
     public function register(): void
     {
         // Instantiate ThreadsManager

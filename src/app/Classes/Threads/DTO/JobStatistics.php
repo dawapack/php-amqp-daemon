@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Threads\DTO;
@@ -8,7 +9,6 @@ use Spatie\DataTransferObject\DataTransferObject;
 
 class JobStatistics extends DataTransferObject
 {
-
     /**
      * @var string
      */

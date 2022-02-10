@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack;
@@ -10,7 +11,6 @@ use DaWaPack\Classes\Workers\WorkerInterface;
 
 class Kernel extends KernelBase
 {
-
     private bool $stopRequested = false;
 
     /**

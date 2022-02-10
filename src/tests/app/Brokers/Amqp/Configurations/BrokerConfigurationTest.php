@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Configurations;
@@ -10,6 +11,9 @@ class BrokerConfigurationTest extends AppTestCase
 {
     private BrokerConfiguration $sut;
 
+    /**
+     * @return void
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -17,36 +21,58 @@ class BrokerConfigurationTest extends AppTestCase
         $this->sut = new BrokerConfiguration($brokerConfigurationFixture);
     }
 
-    public function testSutCanReturnSelectedConnectionName()
+    /**
+     * @return void
+     */
+    public function testSutCanReturnSelectedConnectionName(): void
     {
         $this->assertIsString($this->sut->getConnection());
     }
 
-    public function testSutCanReturnSelectedConnectionProperties()
+    /**
+     * @return void
+     */
+    public function testSutCanReturnSelectedConnectionProperties(): void
     {
         $this->assertIsObject($this->sut->getConnectionConfiguration());
         $this->assertObjectHasAttribute("protocol", $this->sut->getConnectionConfiguration());
     }
 
-    public function testSutCanReturnSelectedContractName()
+    /**
+     * @return void
+     */
+    public function testSutCanReturnSelectedContractName(): void
     {
         $this->assertIsString($this->sut->getContract());
     }
 
-    public function testSutCanReturnSelectedContractProperties()
+    /**
+     * @return void
+     */
+    public function testSutCanReturnSelectedContractProperties(): void
     {
         $this->assertIsObject($this->sut->getContractConfiguration());
         $this->assertObjectHasAttribute("driver", $this->sut->getContractConfiguration());
     }
 
-    public function testSutCanReturnAmqpConnectionFunctionArguments()
+    /**
+     * @return void
+     */
+    public function testSutCanReturnAmqpConnectionFunctionArguments(): void
     {
         $functionArguments = $this->sut->getConnectionConfiguration()->toFunctionArguments(false);
         $this->assertIsArray($functionArguments);
         $this->assertArrayHasKey("host", $functionArguments);
+
+        $functionArguments = $this->sut->getConnectionConfiguration()->toFunctionArguments(true);
+        $this->assertIsArray($functionArguments);
+        $this->assertNotEmpty($functionArguments);
     }
 
-    public function testSutCanReturnAmqpLazyConnectionFunctionArguments()
+    /**
+     * @return void
+     */
+    public function testSutCanReturnAmqpLazyConnectionFunctionArguments(): void
     {
         $functionArguments = $this->sut
             ->getConnectionConfiguration()

@@ -1,9 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Brokers\Amqp\Streamers;
 
-use Closure;
 use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\BrokerChannel;
 use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\ChannelBindings;
 use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\OperationBindings;
@@ -14,7 +14,6 @@ use PhpAmqpLib\Connection\Heartbeat\PCNTLHeartbeatSender;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 use PhpAmqpLib\Exception\AMQPProtocolChannelException;
 use PhpAmqpLib\Wire\AMQPTable;
-use phpDocumentor\Reflection\Types\This;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -177,7 +176,8 @@ abstract class AbstractStreamer implements StreamerInterface
         $channel = $this->getChannel();
         try {
             $functionArguments = array_merge(
-                $this->exchangeDeclareMapper, $channelBindings->toFunctionArguments(false)
+                $this->exchangeDeclareMapper,
+                $channelBindings->toFunctionArguments(false)
             );
             // will throw an exception if the exchange doesn't exist - passive = true
             $channel->exchange_declare(...array_values($functionArguments));
@@ -198,7 +198,8 @@ abstract class AbstractStreamer implements StreamerInterface
     protected function exchangeDelete(ChannelBindings $channelBindings)
     {
         $functionArguments = array_intersect_key(
-            $channelBindings->toFunctionArguments(false), ['name' => null]
+            $channelBindings->toFunctionArguments(false),
+            ['name' => null]
         );
         $channel = $this->getChannel();
         $channel->exchange_delete(...array_values($functionArguments));
@@ -211,7 +212,8 @@ abstract class AbstractStreamer implements StreamerInterface
         $channel = $this->getChannel();
         try {
             $functionArguments = array_merge(
-                $this->queueDeclareMapper, $channelBindings->toFunctionArguments(false)
+                $this->queueDeclareMapper,
+                $channelBindings->toFunctionArguments(false)
             );
             // will throw an exception if the queue doesn't exist - passive = true
             $channel->queue_declare(...array_values($functionArguments));
@@ -232,7 +234,8 @@ abstract class AbstractStreamer implements StreamerInterface
     protected function queueDelete(ChannelBindings $channelBindings)
     {
         $functionArguments = array_intersect_key(
-            $channelBindings->toFunctionArguments(false), ['name' => null]
+            $channelBindings->toFunctionArguments(false),
+            ['name' => null]
         );
         $channel = $this->getChannel();
         $channel->queue_delete(...array_values($functionArguments));

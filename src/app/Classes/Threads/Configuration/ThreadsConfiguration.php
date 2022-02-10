@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Threads\Configuration;
 
 class ThreadsConfiguration implements ThreadsConfigurationInterface
 {
-
     private array $configuration;
 
     /**

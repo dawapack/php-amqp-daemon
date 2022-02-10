@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DaWaPack\Classes\Brokers\Amqp\Configurations\DTO;
 
 use DaWaPack\Classes\Brokers\Amqp\Configurations\BindingsInterface;
@@ -15,6 +17,9 @@ class ChannelBindings extends DataTransferObject implements BindingsInterface
     public bool $autoDelete;
     public string $vhost;
 
+    /**
+     * @inheritdoc
+     */
     public function __construct(array $parameters = [])
     {
         parent::__construct($this->initParameters($parameters));
@@ -25,12 +30,16 @@ class ChannelBindings extends DataTransferObject implements BindingsInterface
      */
     public function toFunctionArguments(bool $onlyValues = true): array
     {
-        // TODO: Implement toFunctionArguments() method.
         return $this->is === "routingKey"
             ? $this->except("is", "exclusive", "vhost")->toArray()
             : $this->except("is", "type", "vhost")->toArray();
     }
 
+    /**
+     * @param array $parameters
+     *
+     * @return array
+     */
     public function initParameters(array $parameters): array
     {
         if (empty($parameters)) {

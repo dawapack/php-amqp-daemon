@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Brokers\Amqp\MessageBags\DTO;
@@ -7,7 +8,6 @@ use Spatie\DataTransferObject\DataTransferObject;
 
 class BagBindings extends DataTransferObject
 {
-
     /**
      * @var string|null
      */

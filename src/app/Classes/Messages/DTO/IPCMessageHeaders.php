@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Messages\DTO;
@@ -7,7 +8,6 @@ use Spatie\DataTransferObject\DataTransferObject;
 
 class IPCMessageHeaders extends DataTransferObject
 {
-
     /**
      * @var string
      */

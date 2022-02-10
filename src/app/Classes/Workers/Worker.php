@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Workers;
@@ -15,12 +16,12 @@ use parallel\Events\Event;
 use parallel\Events\Event\Type as EventType;
 use Psr\Log\LoggerInterface;
 use Throwable;
+
 use function DaWaPack\Chassis\Helpers\app;
 use function DaWaPack\Chassis\Helpers\subscribe;
 
 class Worker implements WorkerInterface
 {
-
     private const LOGGER_COMPONENT_PREFIX = "worker_";
     private const EVENTS_POOL_TIMEOUT_MS = 1;
     private const LOOP_EACH_MS = 50;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Classes\Brokers\Amqp\Configurations\DTO;
@@ -19,6 +20,11 @@ class BrokerChannel extends DataTransferObject
         parent::__construct($this->bindingsFormatter($parameters));
     }
 
+    /**
+     * @param array $parameters
+     *
+     * @return array
+     */
     private function bindingsFormatter(array $parameters): array
     {
         $operation = $parameters["bindings"]["amqp"]["is"] === "routingKey" ? "publish" : "subscribe";
