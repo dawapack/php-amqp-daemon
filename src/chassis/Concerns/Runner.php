@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Chassis\Concerns;
@@ -38,6 +39,7 @@ trait Runner
                 E_USER_ERROR
             );
         }
+
         $this->runnerType = RUNNER_TYPE;
     }
 }

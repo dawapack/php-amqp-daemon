@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Providers;
 
-use DaWaPack\Classes\Threads\Configuration\ThreadsConfiguration;
-use DaWaPack\Classes\Threads\Configuration\ThreadsConfigurationInterface;
-use DaWaPack\Classes\Threads\ThreadsManagerInterface;
-use DaWaPack\Providers\ThreadsManagerServiceProvider;
+use DaWaPack\Chassis\Framework\Providers\ThreadsManagerServiceProvider;
+use DaWaPack\Chassis\Framework\Threads\Configuration\ThreadsConfiguration;
+use DaWaPack\Chassis\Framework\Threads\Configuration\ThreadsConfigurationInterface;
+use DaWaPack\Chassis\Framework\Threads\ThreadsManagerInterface;
 use DaWaPack\Tests\AppTestCase;
 
 class ThreadsManagerServiceProviderTest extends AppTestCase

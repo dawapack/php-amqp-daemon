@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Chassis\Support;
@@ -12,7 +13,6 @@ use function DaWaPack\Chassis\Helpers\value;
 
 class Env
 {
-
     /**
      * Indicates if the putenv adapter is enabled.
      *

@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 use DaWaPack\Chassis\Application;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManager;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManagerInterface;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsValidator;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\SubscriberStreamer;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\SubscriberStreamerInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\BrokerConfiguration;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManager;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManagerInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsValidator;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\SubscriberStreamer;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\SubscriberStreamerInterface;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Psr\Log\LoggerInterface;
 

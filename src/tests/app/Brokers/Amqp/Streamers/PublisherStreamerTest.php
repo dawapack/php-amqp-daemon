@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Streamers;
 
-use DaWaPack\Chassis\Application;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManagerInterface;
-use DaWaPack\Classes\Brokers\Amqp\Handlers\AckNackHandlerInterface;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\PublisherStreamer;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManagerInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Handlers\AckNackHandlerInterface;
 use DaWaPack\Tests\AppTestCase;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Log\LoggerInterface;
@@ -14,12 +12,12 @@ use Psr\Log\LoggerInterface;
 class PublisherStreamerTest extends AppTestCase
 {
     protected bool $infrastructureDeclare = true;
-    private PublisherStreamer $sut;
+    private \DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\PublisherStreamer $sut;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->sut = new PublisherStreamer(
+        $this->sut = new \DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\PublisherStreamer(
             $this->app->get('broker-streamer'),
             $this->app->get(ContractsManagerInterface::class),
             $this->app->get(LoggerInterface::class)
@@ -40,7 +38,7 @@ class PublisherStreamerTest extends AppTestCase
 
     public function testSutIsInstanceOfPublisherStreamer()
     {
-        $this->assertInstanceOf(PublisherStreamer::class, $this->sut);
+        $this->assertInstanceOf(\DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\PublisherStreamer::class, $this->sut);
     }
 
     public function testSutCanSetAcknowledgementHandler()

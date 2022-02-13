@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Chassis\Helpers;
 
 use Closure;
-use DaWaPack\Classes\Brokers\Amqp\BrokerRequest;
-use DaWaPack\Classes\Brokers\Amqp\BrokerResponse;
-use DaWaPack\Classes\Brokers\Amqp\Handlers\MessageHandlerInterface;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\PublisherStreamerInterface;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\SubscriberStreamer;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\SubscriberStreamerInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\BrokerRequest;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\BrokerResponse;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Handlers\MessageHandlerInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\PublisherStreamerInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\SubscriberStreamer;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\SubscriberStreamerInterface;
 
 if (!function_exists('publish')) {
     /**
@@ -25,7 +26,8 @@ if (!function_exists('publish')) {
         if (($context instanceof BrokerRequest) && !is_null($context->getProperty('reply_to'))) {
             $data->setRoutingKey($context->getProperty('reply_to'));
         }
-        app(PublisherStreamerInterface::class)->publish($data, $channelName);
+        app(PublisherStreamerInterface::class)
+            ->publish($data, $channelName);
     }
 }
 

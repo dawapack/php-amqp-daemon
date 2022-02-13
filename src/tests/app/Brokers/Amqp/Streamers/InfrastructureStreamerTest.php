@@ -3,23 +3,23 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Streamers;
 
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManager;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsValidator;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\InfrastructureStreamer;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManager;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsValidator;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\InfrastructureStreamer;
 use DaWaPack\Tests\AppTestCase;
 use Psr\Log\LoggerInterface;
 use function DaWaPack\Chassis\Helpers\app;
 
 class InfrastructureStreamerTest extends AppTestCase
 {
-    private InfrastructureStreamer $sut;
+    private \DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\InfrastructureStreamer $sut;
 
     protected function setUp(): void
     {
         parent::setUp();
         $brokerConfiguration = app(BrokerConfigurationInterface::class);
-        $this->sut = new InfrastructureStreamer(
+        $this->sut = new \DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\InfrastructureStreamer(
             app()->get('broker-streamer'),
             new ContractsManager($brokerConfiguration, new ContractsValidator()),
             app(LoggerInterface::class)

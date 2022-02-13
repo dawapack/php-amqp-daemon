@@ -1,28 +1,47 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Chassis;
 
-use DaWaPack\Chassis\Classes\Config\Configuration;
-use DaWaPack\Chassis\Classes\Logger\LoggerFactory;
+use ArrayAccess;
 use DaWaPack\Chassis\Concerns\ErrorsHandler;
 use DaWaPack\Chassis\Concerns\Runner;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\BrokerConfiguration;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManager;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManagerInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsValidator;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\SubscriberStreamer;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\SubscriberStreamerInterface;
+use DaWaPack\Chassis\Framework\Configuration\Configuration;
+use DaWaPack\Chassis\Framework\InterProcessCommunication\ChannelsInterface;
+use DaWaPack\Chassis\Framework\InterProcessCommunication\ParallelChannels;
+use DaWaPack\Chassis\Framework\Logger\LoggerApplicationContext;
+use DaWaPack\Chassis\Framework\Logger\LoggerApplicationContextInterface;
+use DaWaPack\Chassis\Framework\Logger\LoggerFactory;
+use DaWaPack\Chassis\Framework\Providers\ThreadInstanceServiceProvider;
+use DaWaPack\Chassis\Framework\Providers\ThreadsManagerServiceProvider;
+use DaWaPack\Chassis\Framework\Threads\Configuration\ThreadsConfiguration;
+use DaWaPack\Chassis\Framework\Threads\Configuration\ThreadsConfigurationInterface;
 use League\Config\Configuration as LeagueConfiguration;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
+use parallel\Events;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-class Application extends Container
+class Application extends Container implements ArrayAccess
 {
-
     use ErrorsHandler;
     use Runner;
 
     private static Application $instance;
     private string $basePath;
+    private array $properties;
 
     /**
      * Application constructor.
@@ -37,9 +56,7 @@ class Application extends Container
         parent::__construct();
         $this->basePath = $basePath;
 
-        // make all definitions to default to shared - singletons
         $this->defaultToShared(true);
-        // use auto-wiring
         $this->enableAutoWiring();
         $this->bootstrapContainer();
         $this->registerErrorHandling();
@@ -49,7 +66,6 @@ class Application extends Container
             trigger_error("Run only in cli mode", E_USER_ERROR);
         }
 
-        // pcntl signals must be async
         pcntl_async_signals(true);
 
         self::$instance = $this;
@@ -85,7 +101,6 @@ class Application extends Container
         try {
             return $this->get('config')->get($key);
         } catch (Throwable $reason) {
-            // fault-tolerant - just log the thrown exception & return null
             $this->logger()->error(
                 $reason->getMessage(),
                 ["error" => $reason]
@@ -106,7 +121,6 @@ class Application extends Container
         try {
             $this->get('config')->load($alias);
         } catch (Throwable $reason) {
-            // fault-tolerant - just log the thrown exception
             $this->logger()->error(
                 $reason->getMessage(),
                 ["error" => $reason]
@@ -126,6 +140,106 @@ class Application extends Container
 
     /**
      * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Throwable
+     */
+    public function withThreads(): void
+    {
+        // load configurations
+        $this->withConfig("threads");
+
+        // container bindings
+        $this->add(ThreadsConfigurationInterface::class, ThreadsConfiguration::class)
+            ->addArgument($this->get("config")->get("threads"));
+        $this->add(ChannelsInterface::class, ParallelChannels::class)
+            ->addArguments([new Events(), LoggerInterface::class])
+            ->setShared(false);
+
+        // service provider declarations
+        $this->addServiceProvider(new ThreadsManagerServiceProvider());
+        $this->addServiceProvider(new ThreadInstanceServiceProvider());
+    }
+
+    /**
+     * @param bool $bindDependencies
+     *
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Throwable
+     */
+    public function withBroker(bool $bindDependencies = false): void
+    {
+        // load configurations
+        $this->withConfig("broker");
+
+        // container bindings
+        $this->add(BrokerConfigurationInterface::class, BrokerConfiguration::class)
+            ->addArgument($this->get("config")->get("broker"));
+
+        if ($bindDependencies) {
+            $this->bindBrokerDependencies();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetExists($offset): bool
+    {
+        return isset($this->properties[$offset]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetGet($offset)
+    {
+        return $this->properties[$offset] ?? null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetSet($offset, $value): void
+    {
+        $this->properties[$offset] = $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->properties[$offset]);
+    }
+
+    /**
+     * @return void
+     */
+    private function bindBrokerDependencies(): void
+    {
+        // container bindings
+        $this->add(ContractsManagerInterface::class, ContractsManager::class)
+            ->addArguments([BrokerConfigurationInterface::class, new ContractsValidator()]);
+        $this->add('brokerStreamConnection', function ($app) {
+            return new AMQPStreamConnection(
+                ...array_values(
+                    $app->get(ContractsManagerInterface::class)->toStreamConnectionFunctionArguments()
+                )
+            );
+        })->addArgument($this)->setShared(false);
+        $this->add(SubscriberStreamerInterface::class, SubscriberStreamer::class)
+            ->addArguments([
+                $this->get('brokerStreamConnection'),
+                ContractsManagerInterface::class,
+                LoggerInterface::class
+            ])->setShared(false);
+    }
+
+    /**
+     * @return void
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -133,7 +247,11 @@ class Application extends Container
     private function bootstrapContainer(): void
     {
         // Add singletons by his interface
-        $this->add(LoggerInterface::class, (new LoggerFactory($this->basePath))());
+        $this->add(LoggerApplicationContextInterface::class, LoggerApplicationContext::class);
+        $this->add(
+            LoggerInterface::class,
+            (new LoggerFactory($this->basePath))($this)
+        );
 
         // Add singletons by alias
         $this->add('config', new Configuration(

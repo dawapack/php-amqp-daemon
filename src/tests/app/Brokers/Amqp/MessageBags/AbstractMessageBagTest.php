@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\MessageBags;
 
-use DaWaPack\Classes\Brokers\Amqp\MessageBags\AbstractMessageBag;
-use DaWaPack\Classes\Brokers\Amqp\MessageBags\DTO\BagBindings;
-use DaWaPack\Classes\Brokers\Amqp\MessageBags\DTO\BagProperties;
-use DaWaPack\Classes\Brokers\Exceptions\MessageBagFormatException;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\AbstractMessageBag;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\DataTransferObject\BagBindings;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\DataTransferObject\BagProperties;
+use DaWaPack\Chassis\Framework\Brokers\Exceptions\MessageBagFormatException;
 use DaWaPack\Tests\AppTestCase;
 use PhpAmqpLib\Message\AMQPMessage;
 use Ramsey\Uuid\Uuid;
@@ -194,7 +194,7 @@ class AbstractMessageBagTest extends AppTestCase
             [
                 "gzip this string",
                 [
-                    'content_type' => AbstractMessageBag::GZIP_CONTENT_TYPE,
+                    'content_type' => \DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\AbstractMessageBag::GZIP_CONTENT_TYPE,
                     'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
                     'priority' => 0,
                     'delivery_mode' => 2,
@@ -297,7 +297,7 @@ class AbstractMessageBagTest extends AppTestCase
         $message = 'test ok';
         $properties = [
             'content_type' => AbstractMessageBag::TEXT_CONTENT_TYPE,
-            'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+            'content_encoding' => \DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
             'priority' => 0,
             'delivery_mode' => 2,
             'correlation_id' => (Uuid::uuid4())->toString(),
@@ -319,7 +319,7 @@ class AbstractMessageBagTest extends AppTestCase
     {
         $message = 'test ok';
         $properties = [
-            'content_type' => AbstractMessageBag::TEXT_CONTENT_TYPE,
+            'content_type' => \DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\AbstractMessageBag::TEXT_CONTENT_TYPE,
             'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
             'priority' => 0,
             'delivery_mode' => 2,
@@ -328,7 +328,7 @@ class AbstractMessageBagTest extends AppTestCase
             'type' => 'doSomething',
         ];
 
-        $sut = new class ($message, $properties) extends AbstractMessageBag {
+        $sut = new class ($message, $properties) extends \DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\AbstractMessageBag {
         };
 
         $sut->setQueueName('my_queue_name');
@@ -343,7 +343,7 @@ class AbstractMessageBagTest extends AppTestCase
         $message = 'test ok';
         $properties = [
             'content_type' => AbstractMessageBag::TEXT_CONTENT_TYPE,
-            'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+            'content_encoding' => \DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
             'priority' => 0,
             'delivery_mode' => 2,
             'correlation_id' => (Uuid::uuid4())->toString(),
@@ -351,7 +351,7 @@ class AbstractMessageBagTest extends AppTestCase
             'type' => 'doSomething',
         ];
 
-        $sut = new class ($message, $properties) extends AbstractMessageBag {
+        $sut = new class ($message, $properties) extends \DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\AbstractMessageBag {
         };
 
         $this->assertInstanceOf(BagBindings::class, $sut->getBindings());
@@ -397,7 +397,7 @@ class AbstractMessageBagTest extends AppTestCase
             $AMQPMessage->getBody(),
             $AMQPMessage->get_properties(),
             $AMQPMessage->getConsumerTag()
-        ) extends AbstractMessageBag {
+        ) extends \DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\AbstractMessageBag {
         };
 
     }
@@ -424,7 +424,7 @@ class AbstractMessageBagTest extends AppTestCase
                 ["test" => __METHOD__],
                 [
                     'content_type' => AbstractMessageBag::GZIP_CONTENT_TYPE,
-                    'content_encoding' => AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
+                    'content_encoding' => \DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\AbstractMessageBag::DEFAULT_CONTENT_ENCODING,
                     'priority' => 0,
                     'delivery_mode' => 2,
                     'correlation_id' => (Uuid::uuid4())->toString(),
@@ -471,7 +471,7 @@ class AbstractMessageBagTest extends AppTestCase
         $message, array $properties
     ): void {
         $this->expectException(MessageBagFormatException::class);
-        $sut = new class($message, $properties) extends AbstractMessageBag {
+        $sut = new class($message, $properties) extends \DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\AbstractMessageBag {
         };
         $sut->toAmqpMessage();
 

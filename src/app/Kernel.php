@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DaWaPack;
 
-use DaWaPack\Chassis\Classes\Base\KernelBase;
+use DaWaPack\Chassis\Framework\KernelBase;
+use DaWaPack\Chassis\Framework\Threads\ThreadsManagerInterface;
+use DaWaPack\Chassis\Framework\Workers\WorkerInterface;
 use DaWaPack\Chassis\Helpers\Pcntl\PcntlSignals;
-use DaWaPack\Classes\Threads\ThreadsManagerInterface;
-use DaWaPack\Classes\Workers\WorkerInterface;
 
 class Kernel extends KernelBase
 {
@@ -36,7 +36,10 @@ class Kernel extends KernelBase
      */
     protected function bootstrap(): void
     {
-        $this->logger()->info("kernel bootstrapped", ['component' => $this->loggerComponent]);
+        $this->logger()->info(
+            "kernel bootstrapped",
+            ['component' => $this->loggerComponent]
+        );
         $this->bootstrapSignals();
     }
 

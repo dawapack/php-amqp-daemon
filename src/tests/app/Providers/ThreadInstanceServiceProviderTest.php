@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Providers;
 
-use DaWaPack\Classes\Threads\ThreadInstanceInterface;
-use DaWaPack\Providers\ThreadInstanceServiceProvider;
+use DaWaPack\Chassis\Framework\Providers\ThreadInstanceServiceProvider;
+use DaWaPack\Chassis\Framework\Threads\ThreadInstanceInterface;
 use DaWaPack\Tests\AppTestCase;
 
 class ThreadInstanceServiceProviderTest extends AppTestCase

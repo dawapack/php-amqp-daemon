@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\MessageBags;
 
-use DaWaPack\Classes\Brokers\Amqp\BrokerResponse;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManagerInterface;
-use DaWaPack\Classes\Brokers\Amqp\Handlers\AckNackHandlerInterface;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\PublisherStreamer;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\PublisherStreamerInterface;
-use DaWaPack\Classes\Brokers\Exceptions\MessageBagFormatException;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\BrokerResponse;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManagerInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Handlers\AckNackHandlerInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\PublisherStreamer;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\PublisherStreamerInterface;
+use DaWaPack\Chassis\Framework\Brokers\Exceptions\MessageBagFormatException;
 use DaWaPack\Tests\AppTestCase;
 use JsonException;
 use PhpAmqpLib\Message\AMQPMessage;

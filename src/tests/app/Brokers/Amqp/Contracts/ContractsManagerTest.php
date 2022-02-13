@@ -3,19 +3,18 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Contracts;
 
-use DaWaPack\Classes\Brokers\Amqp\BrokerRequest;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\BrokerChannelsCollection;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManager;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsValidator;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\Exceptions\ContractsValidatorException;
-use DaWaPack\Classes\Brokers\Exceptions\StreamerChannelNameNotFoundException;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\BrokerRequest;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\BrokerConfiguration;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\DataTransferObject\BrokerChannelsCollection;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManager;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsValidator;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\Exceptions\ContractsValidatorException;
+use DaWaPack\Chassis\Framework\Brokers\Exceptions\StreamerChannelNameNotFoundException;
 use DaWaPack\Tests\AppTestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
-
 use function DaWaPack\Chassis\Helpers\app;
 
 class ContractsManagerTest extends AppTestCase
@@ -105,7 +104,7 @@ class ContractsManagerTest extends AppTestCase
 
     /**
      * @return void
-     * @throws StreamerChannelNameNotFoundException
+     * @throws \DaWaPack\Chassis\Framework\Brokers\Exceptions\StreamerChannelNameNotFoundException
      */
     public function testSutMustThrowAnExceptionCallingToBasicConsumeArgumentsWithWrongChannelName(): void
     {
@@ -128,7 +127,7 @@ class ContractsManagerTest extends AppTestCase
         $broker["contracts"]["asyncapi"]["paths"]["validator"] = '';
         new ContractsManager(
             new BrokerConfiguration($broker),
-            new ContractsValidator()
+            new \DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsValidator()
         );
     }
 }

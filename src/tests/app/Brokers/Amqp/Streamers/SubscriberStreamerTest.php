@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Streamers;
 
-use DaWaPack\Classes\Brokers\Amqp\BrokerRequest;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManagerInterface;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\SubscriberStreamer;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\BrokerRequest;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManagerInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\SubscriberStreamer;
 use DaWaPack\Tests\AppTestCase;
 use Psr\Log\LoggerInterface;
 

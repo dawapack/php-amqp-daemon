@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Chassis\Concerns;
 
 use DaWaPack\Chassis\Exceptions\ApplicationErrorException;
 use DaWaPack\Chassis\Support\FatalError;
-use Psr\Log\LoggerInterface;
 use Throwable;
 use function DaWaPack\Chassis\Helpers\env;
 
@@ -82,6 +82,7 @@ trait ErrorsHandler
                 "error" => $reason
             ]
         );
+
         exit(1);
     }
 

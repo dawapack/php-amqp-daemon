@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Streamers;
 
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManager;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsValidator;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\AbstractStreamer;
-use DaWaPack\Classes\Brokers\Amqp\Streamers\StreamerInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManager;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsValidator;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\AbstractStreamer;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\StreamerInterface;
 use DaWaPack\Tests\AppTestCase;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
@@ -18,7 +18,7 @@ class AbstractStreamerTest extends AppTestCase
 {
 
     /**
-     * @var StreamerInterface
+     * @var \DaWaPack\Chassis\Framework\Brokers\Amqp\Streamers\StreamerInterface
      */
     private StreamerInterface $sut;
 

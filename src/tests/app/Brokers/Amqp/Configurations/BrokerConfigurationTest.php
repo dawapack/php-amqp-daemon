@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Configurations;
 
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
 use DaWaPack\Tests\AppTestCase;
 
 class BrokerConfigurationTest extends AppTestCase
 {
-    private BrokerConfiguration $sut;
+    private \DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\BrokerConfiguration $sut;
 
     /**
      * @return void
@@ -18,7 +17,7 @@ class BrokerConfigurationTest extends AppTestCase
     {
         parent::setUp();
         $brokerConfigurationFixture = require __DIR__ . "/../../../../app/Brokers/Amqp/Fixtures/Config/broker.php";
-        $this->sut = new BrokerConfiguration($brokerConfigurationFixture);
+        $this->sut = new \DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\BrokerConfiguration($brokerConfigurationFixture);
     }
 
     /**

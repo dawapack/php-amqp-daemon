@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests\app\Brokers\Amqp\Contracts;
 
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManager;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsValidator;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\Exceptions\ContractsValidatorException;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\BrokerConfiguration;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManager;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsValidator;
+use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\Exceptions\ContractsValidatorException;
 use DaWaPack\Tests\AppTestCase;
 
 class ContractsValidatorTest extends AppTestCase
 {
     /**
      * @return void
-     * @throws ContractsValidatorException
+     * @throws \DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\Exceptions\ContractsValidatorException
      */
     public function testValidatorMustFailWithContractsValidatorException(): void
     {
