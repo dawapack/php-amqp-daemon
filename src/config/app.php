@@ -2,7 +2,7 @@
 
 namespace DaWaPack\Config;
 
-use function DaWaPack\Chassis\Helpers\env;
+use function Chassis\Helpers\env;
 
 return [
     /*

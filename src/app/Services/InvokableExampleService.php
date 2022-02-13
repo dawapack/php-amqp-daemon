@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace DaWaPack\Services;
 
-use DaWaPack\Chassis\Framework\Brokers\Amqp\BrokerResponse;
-use DaWaPack\Chassis\Framework\Brokers\Amqp\MessageBags\MessageBagInterface;
-use DaWaPack\Chassis\Framework\Services\ServiceInterface;
+use Chassis\Framework\Brokers\Amqp\BrokerResponse;
+use Chassis\Framework\Brokers\Amqp\MessageBags\MessageBagInterface;
+use Chassis\Framework\Services\ServiceInterface;
 
-use function DaWaPack\Chassis\Helpers\app;
+use function Chassis\Helpers\app;
 
 class InvokableExampleService implements ServiceInterface
 {

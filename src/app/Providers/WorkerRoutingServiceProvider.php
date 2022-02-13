@@ -2,7 +2,7 @@
 
 namespace DaWaPack\Providers;
 
-use DaWaPack\Chassis\Framework\Providers\RoutingServiceProvider;
+use Chassis\Framework\Providers\RoutingServiceProvider;
 use DaWaPack\Services\ExampleService;
 use DaWaPack\Services\InvokableExampleService;
 

@@ -3,9 +3,8 @@
 
 declare(strict_types=1);
 
-use DaWaPack\Chassis\Application;
+use Chassis\Application;
 use DaWaPack\Kernel;
-use DaWaPack\Providers\WorkerRoutingServiceProvider;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,14 +13,6 @@ use DaWaPack\Providers\WorkerRoutingServiceProvider;
 */
 /** @var Application $app */
 $app = require __DIR__ . '/../bootstrap/app.php';
-
-/*
-|--------------------------------------------------------------------------
-| Load configuration files
-|--------------------------------------------------------------------------
-*/
-// uncomment this line and replace file by the config file you want to load
-//$app->withConfig("file");
 
 /*
 |--------------------------------------------------------------------------
@@ -36,21 +27,6 @@ $app->withThreads();
 |--------------------------------------------------------------------------
 */
 $app->withBroker();
-
-/*
-|--------------------------------------------------------------------------
-| Register interfaces, aliases, ...
-|--------------------------------------------------------------------------
-*/
-//$app->add(MyInterface::class, MyConcrete::class)
-//    ->addArguments(["argument", new InjectedDependecy()])
-
-/*
-|--------------------------------------------------------------------------
-| Register service providers
-|--------------------------------------------------------------------------
-*/
-//$app->addServiceProvider(new MyServiceProvider());
 
 /*
 |--------------------------------------------------------------------------

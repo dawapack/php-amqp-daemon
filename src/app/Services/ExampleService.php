@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DaWaPack\Services;
 
-use DaWaPack\Chassis\Framework\Brokers\Amqp\BrokerResponse;
-use DaWaPack\Chassis\Framework\Services\BrokerAbstractService;
+use Chassis\Framework\Brokers\Amqp\BrokerResponse;
+use Chassis\Framework\Services\BrokerAbstractService;
 
 class ExampleService extends BrokerAbstractService
 {

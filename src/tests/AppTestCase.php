@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests;
 
-use DaWaPack\Chassis\Application;
-use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\DataTransferObject\BrokerChannel;
-use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\DataTransferObject\BrokerChannelsCollection;
-use DaWaPack\Chassis\Framework\Brokers\Amqp\Configurations\DataTransferObject\OperationBindings;
-use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManager;
-use DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManagerInterface;
+use Chassis\Application;
+use Chassis\Framework\Brokers\Amqp\Configurations\DataTransferObject\BrokerChannel;
+use Chassis\Framework\Brokers\Amqp\Configurations\DataTransferObject\BrokerChannelsCollection;
+use Chassis\Framework\Brokers\Amqp\Configurations\DataTransferObject\OperationBindings;
+use Chassis\Framework\Brokers\Amqp\Contracts\ContractsManager;
+use Chassis\Framework\Brokers\Amqp\Contracts\ContractsManagerInterface;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PHPUnit\Framework\TestCase;
@@ -76,7 +76,7 @@ class AppTestCase extends TestCase
         if ($this->app->has('broker-declared-queues')) {
             return;
         }
-        /** @var \DaWaPack\Chassis\Framework\Brokers\Amqp\Contracts\ContractsManager $contractManager */
+        /** @var ContractsManager $contractManager */
         $contractManager = $this->app->get(ContractsManagerInterface::class);
         $channels = $contractManager->getChannels();
         $streamChannel = $streamConnection->channel();

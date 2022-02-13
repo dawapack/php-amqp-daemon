@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace DaWaPack\Bootstrap;
 
-use DaWaPack\Chassis\Application;
-use DaWaPack\Chassis\Framework\Loaders\Environment;
+use Chassis\Application;
+use Chassis\Framework\Loaders\Environment;
 
-use function DaWaPack\Chassis\Helpers\defineRunner;
-use function DaWaPack\Chassis\Helpers\env;
+use function Chassis\Helpers\defineRunner;
+use function Chassis\Helpers\env;
 
 // import PSR autoload
 require_once __DIR__ . '/../vendor/autoload.php';

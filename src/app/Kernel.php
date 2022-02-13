@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DaWaPack;
 
-use DaWaPack\Chassis\Framework\KernelBase;
-use DaWaPack\Chassis\Framework\Threads\ThreadsManagerInterface;
-use DaWaPack\Chassis\Framework\Workers\WorkerInterface;
-use DaWaPack\Chassis\Helpers\Pcntl\PcntlSignals;
+use Chassis\Framework\KernelBase;
+use Chassis\Framework\Threads\ThreadsManagerInterface;
+use Chassis\Framework\Workers\WorkerInterface;
+use Chassis\Helpers\Pcntl\PcntlSignals;
 
 class Kernel extends KernelBase
 {
