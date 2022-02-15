@@ -3,15 +3,12 @@ declare(strict_types=1);
 
 namespace DaWaPack\Tests;
 
-use DaWaPack\Chassis\Application;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\BrokerChannel;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\BrokerChannelsCollection;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\DTO\OperationBindings;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManager;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsManagerInterface;
-use DaWaPack\Classes\Brokers\Amqp\Contracts\ContractsValidator;
+use Chassis\Application;
+use Chassis\Framework\Brokers\Amqp\Configurations\DataTransferObject\BrokerChannel;
+use Chassis\Framework\Brokers\Amqp\Configurations\DataTransferObject\BrokerChannelsCollection;
+use Chassis\Framework\Brokers\Amqp\Configurations\DataTransferObject\OperationBindings;
+use Chassis\Framework\Brokers\Amqp\Contracts\ContractsManager;
+use Chassis\Framework\Brokers\Amqp\Contracts\ContractsManagerInterface;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PHPUnit\Framework\TestCase;

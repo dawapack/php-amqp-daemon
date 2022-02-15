@@ -1,15 +1,11 @@
 #!/usr/bin/env php
 <?php
+
 declare(strict_types=1);
 
-use DaWaPack\Chassis\Application;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfiguration;
-use DaWaPack\Classes\Brokers\Amqp\Configurations\BrokerConfigurationInterface;
-use DaWaPack\Classes\Threads\Configuration\ThreadsConfiguration;
-use DaWaPack\Classes\Threads\Configuration\ThreadsConfigurationInterface;
-use DaWaPack\Kernel;
-use DaWaPack\Providers\ThreadInstanceServiceProvider;
-use DaWaPack\Providers\ThreadsManagerServiceProvider;
+use Chassis\Application;
+use Chassis\Framework\Kernel;
+use DaWaPack\Providers\RequestRoutingServiceProvider;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,29 +17,24 @@ $app = require __DIR__ . '/../bootstrap/app.php';
 
 /*
 |--------------------------------------------------------------------------
-| Load configuration files
+| Register multi-threading
 |--------------------------------------------------------------------------
 */
-$app->withConfig("threads");
+$app->withThreads();
 
 /*
 |--------------------------------------------------------------------------
-| Register interfaces
+| Register broker
 |--------------------------------------------------------------------------
 */
-$app->add(ThreadsConfigurationInterface::class, ThreadsConfiguration::class)
-    ->addArgument($app->get("config")->get("threads"));
-
-$app->add(BrokerConfigurationInterface::class, BrokerConfiguration::class)
-    ->addArgument($app->get("config")->get("broker"));
+$app->withBroker();
 
 /*
 |--------------------------------------------------------------------------
-| Register service providers
+| Add container aliases
 |--------------------------------------------------------------------------
 */
-$app->addServiceProvider(new ThreadsManagerServiceProvider());
-$app->addServiceProvider(new ThreadInstanceServiceProvider());
+$app->addServiceProvider(new RequestRoutingServiceProvider());
 
 /*
 |--------------------------------------------------------------------------

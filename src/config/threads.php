@@ -9,7 +9,7 @@ return [
     | Default settings
     |--------------------------------------------------------------------------
     */
-    'handler' => \DaWaPack\Classes\Brokers\Amqp\BrokerRequest::class,
+    'handler' => \Chassis\Framework\Brokers\Amqp\BrokerRequest::class,
     // minimum vertical scaling
     'minimum' => 2,
     // maximum vertical scaling
@@ -56,21 +56,21 @@ return [
     'worker' => [
         'channels' => [
             'inbound/commands' => [
-                'handler' => \DaWaPack\Classes\Brokers\Amqp\BrokerRequest::class,
+                'handler' => \Chassis\Framework\Brokers\Amqp\BrokerRequest::class,
                 'minimum' => 5,
                 'maximum' => 50,
                 'max_jobs' => 200,
                 'enabled' => true,
             ],
             'inbound/responses' => [
-                'handler' => \DaWaPack\Classes\Brokers\Amqp\BrokerResponse::class,
+                'handler' => \Chassis\Framework\Brokers\Amqp\BrokerResponse::class,
                 'minimum' => 5,
                 'maximum' => 50,
                 'max_jobs' => 100,
                 'enabled' => true,
             ],
             'inbound/events' => [
-                'handler' => \DaWaPack\Classes\Brokers\Amqp\BrokerRequest::class,
+                'handler' => \Chassis\Framework\Brokers\Amqp\BrokerRequest::class,
                 'minimum' => 5,
                 'maximum' => 50,
                 'max_jobs' => 100,

@@ -18,7 +18,7 @@ return [
             'user' => 'guest',
             'pass' => 'guest',
             'vhost' => '/',
-            'heartbeat' => 10,
+            'heartbeat' => 60,
         ]
     ],
     'contracts' => [

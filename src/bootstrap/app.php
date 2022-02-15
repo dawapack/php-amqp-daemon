@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace DaWaPack\Bootstrap;
 
-use DaWaPack\Chassis\Application;
-use DaWaPack\Chassis\Bootstrap\LoadEnvironmentVariables;
-use function DaWaPack\Chassis\Helpers\env;
-use function DaWaPack\Chassis\Helpers\defineRunner;
+use Chassis\Application;
+use Chassis\Framework\Loaders\Environment;
+
+use function Chassis\Helpers\defineRunner;
+use function Chassis\Helpers\env;
 
 // import PSR autoload
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -17,11 +18,11 @@ defineRunner();
 // Set ENV base path
 $basePath = dirname(__DIR__);
 
+// Load environment variables
+(new Environment($basePath))->bootstrap();
+
 // Set default timezone
 date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
-
-// Load environment variables
-(new LoadEnvironmentVariables($basePath))->bootstrap();
 
 // Create & return application instance
 return new Application($basePath);

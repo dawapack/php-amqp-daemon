@@ -2,10 +2,9 @@
 
 namespace DaWaPack\Config;
 
-use function DaWaPack\Chassis\Helpers\env;
+use function Chassis\Helpers\env;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -26,11 +25,8 @@ return [
     |--------------------------------------------------------------------------
     | Application Log Level
     |--------------------------------------------------------------------------
-    |
-    | When your application is in debug mode, detailed error messages with
-    | stack traces will be shown on every error that occurs within your
-    | application. If disabled, a simple generic error page is shown.
-    |
+    | use DEBUG level for development
+    | use WARNING level for production
     */
 
     'loglevel' => env('APP_LOGLEVEL', 'DEBUG'),
