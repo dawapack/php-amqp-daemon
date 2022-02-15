@@ -6,7 +6,7 @@ use Chassis\Framework\Providers\RoutingServiceProvider;
 use DaWaPack\Services\ExampleService;
 use DaWaPack\Services\InvokableExampleService;
 
-class WorkerRoutingServiceProvider extends RoutingServiceProvider
+class RequestRoutingServiceProvider extends RoutingServiceProvider
 {
     /**
      * @var array|string[]

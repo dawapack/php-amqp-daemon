@@ -4,7 +4,8 @@
 declare(strict_types=1);
 
 use Chassis\Application;
-use DaWaPack\Kernel;
+use Chassis\Framework\Kernel;
+use DaWaPack\Providers\RequestRoutingServiceProvider;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,13 @@ $app->withThreads();
 |--------------------------------------------------------------------------
 */
 $app->withBroker();
+
+/*
+|--------------------------------------------------------------------------
+| Add container aliases
+|--------------------------------------------------------------------------
+*/
+$app->addServiceProvider(new RequestRoutingServiceProvider());
 
 /*
 |--------------------------------------------------------------------------
