@@ -18,7 +18,10 @@ return [
             'user' => 'guest',
             'pass' => 'guest',
             'vhost' => '/',
-            'heartbeat' => 60,
+            'heartbeat' => 30,
+            'connection_timeout' => 5.0,
+            'read_write_timeout' => 30.0,
+            'channel_rpc_timeout' => 30.0,
         ]
     ],
     'contracts' => [
