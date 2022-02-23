@@ -1,0 +1,25 @@
+#
+# Trigger create something sample
+#
+POST http://localhost:15672/api/exchanges/%2f/DaWaPack.DX.Commands/publish
+Authorization: Basic guest guest
+Content-Type: application/json
+
+{
+  "properties": {
+    "content_type": "application/json",
+    "content_encoding": "UTF-8",
+    "priority": 0,
+    "delivery_mode": 2,
+    "correlation_id": "101a2a08-4b5f-4b43-9ee3-a4c43d920dc7",
+    "message_id": "bb1fd643-6bc6-45e4-9aff-ce0a5e354f0c",
+    "type": "createSomething",
+    "headers": {
+      "jobId": "eef80abf-ac7d-46ca-b273-3c6f0b001f6d",
+      "dateTime": "2022-01-01T01:20:30.400+00:00"
+    }
+  },
+  "routing_key": "DaWaPack.RK.CommandFireAndForget",
+  "payload": "{}",
+  "payload_encoding": "string"
+}

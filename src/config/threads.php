@@ -57,7 +57,7 @@ return [
         'channels' => [
             'inbound/commands' => [
                 'handler' => \Chassis\Framework\Brokers\Amqp\BrokerRequest::class,
-                'minimum' => 5,
+                'minimum' => 15,
                 'maximum' => 50,
                 'max_jobs' => 200,
                 'enabled' => true,
