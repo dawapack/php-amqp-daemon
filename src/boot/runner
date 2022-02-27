@@ -5,7 +5,8 @@ declare(strict_types=1);
 
 use Chassis\Application;
 use Chassis\Framework\Kernel;
-use DaWaPack\Providers\RequestRoutingServiceProvider;
+use DaWaPack\Providers\InboundServiceProvider;
+use DaWaPack\Providers\OutboundServiceProvider;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +35,8 @@ $app->withBroker();
 | Add container aliases
 |--------------------------------------------------------------------------
 */
-$app->addServiceProvider(new RequestRoutingServiceProvider());
+$app->addServiceProvider(new InboundServiceProvider());
+$app->addServiceProvider(new OutboundServiceProvider());
 
 /*
 |--------------------------------------------------------------------------

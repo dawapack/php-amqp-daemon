@@ -18,7 +18,7 @@
     "ext-json": "*",
     "ext-simplexml": "*",
     "php": "^7.4",
-    "dawapack/php-chassis-framework": "^0"
+    "dawapack/php-chassis-framework": "dev-feature/0004"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5",

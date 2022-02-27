@@ -6,24 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2022-02-27
+
+### Added
+
+- Add outbounds adapters
+- Add outbound service provider
+
 ## [0.6.0] - 2022-02-23
 
 ### Added
 
-- Added service examples - prepare for DaWaPack Playground
+- Add service examples - prepare for DaWaPack Playground
 
 ## [0.5.0] - 2022-02-09
 
 ### Added
 
-- Added code sniffer package & clean the code
+- Add code sniffer package & clean the code
 
 ## [0.4.0] - 2022-01-23
 
 ### Added
 
-- Publish & consume ability
-- Respawning thread(s) ability
+- Add Publish & consume ability
+- Add Respawning thread(s) ability
 
 ## [0.3.0] - 2022-01-03
 
