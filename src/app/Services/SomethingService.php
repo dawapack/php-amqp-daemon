@@ -37,8 +37,6 @@ class SomethingService extends BrokerAbstractService
      */
     public function create()
     {
-        $start = microtime(true);
-
         // Active RPC sample - call get action, wait 5 seconds for response
         $response = $this->send("getSomethingSync", $this->request([]));
         if (!is_null($response)) {
@@ -50,8 +48,6 @@ class SomethingService extends BrokerAbstractService
 
         // Fire and forget - just push a message
         $this->send("deleteSomething", $this->request([]));
-
-        var_dump("elapsed time - " . (microtime(true) - $start));
     }
 
     /**
