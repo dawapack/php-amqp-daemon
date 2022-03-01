@@ -40,7 +40,7 @@ class SomethingService extends BrokerAbstractService
         // Active RPC sample - call get action, wait 5 seconds for response
         $response = $this->send("getSomethingSync", $this->request([]));
         if (!is_null($response)) {
-            // TODO: execute your business logic based on response
+            // TODO: execute your business logic and handle the response
         }
 
         // Passive RPC sample - call get action fire and forget.
