@@ -9,7 +9,7 @@ use Chassis\Framework\OutboundAdapters\OutboundAbstractAdapter;
 class DaWaPackDeletedEvents extends OutboundAbstractAdapter
 {
     /**
-     * This will use a dedicated channel for events calls
+     * Use a dedicated channel for events calls - fire and forget call type
      *
      * @var string
      */
@@ -23,9 +23,8 @@ class DaWaPackDeletedEvents extends OutboundAbstractAdapter
     protected string $routingKey = "DaWaPack.RK.EventLoopback";
 
     /**
-     * To be more specific, we can set the message type here, and will be filled by the
-     * outbound adapter. The other way is to set up the message type property and remove
-     * this property.
+     * To be more specific, we can set the message type here and will be filled by the
+     * outbound adapter. The other way is to set up the message type property.
      *
      * @var string
      */

@@ -9,7 +9,7 @@ use Chassis\Framework\OutboundAdapters\OutboundAbstractAdapter;
 class DaWaPackGetAsync extends OutboundAbstractAdapter
 {
     /**
-     * This will use a dedicated channel for RPC calls
+     * Use a dedicated channel - passive RPC calls type
      *
      * @var string
      */
@@ -30,7 +30,7 @@ class DaWaPackGetAsync extends OutboundAbstractAdapter
     protected string $replyTo = "DaWaPack.Q.Responses";
 
     /**
-     * To be more specific, we can set the message type here, and will be filled by the
+     * To be more specific, we can set the message type here and will be filled by the
      * outbound adapter. The other way is to set up the message type property.
      *
      * @var string

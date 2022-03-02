@@ -1,5 +1,3 @@
-/run
-/tmp
 /vendor
 .env
 .phpunit.result.cache
