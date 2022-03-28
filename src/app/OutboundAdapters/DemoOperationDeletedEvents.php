@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DaWaPack\OutboundAdapters;
 
-use Chassis\Framework\OutboundAdapters\OutboundAbstractAdapter;
+use Chassis\Framework\Adapters\Operations\AbstractOperationsAdapter;
 
-class DaWaPackDeletedEvents extends OutboundAbstractAdapter
+class DemoOperationDeletedEvents extends AbstractOperationsAdapter
 {
     /**
      * Use a dedicated channel for events calls - fire and forget call type

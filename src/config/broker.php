@@ -38,8 +38,8 @@ return [
         'asyncapi' => [
             'driver' => 'filesystem',
             'paths' => [
-                'source' => '/var/www/vendor/dawapack/asyncapi-contract-sample/src',
-                'validator' => '/var/www/vendor/dawapack/asyncapi-contract-sample/src/json-schemas/bindings/amqp'
+                'source' => '/var/asyncapi',
+                'validator' => '/var/asyncapi/json-schemas/bindings/amqp'
             ],
             'definitions' => [
                 'contract' => 'dawapack.yml',
