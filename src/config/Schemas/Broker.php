@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DaWaPack\Config\Schemas;
@@ -8,7 +9,6 @@ use Nette\Schema\Schema;
 
 class Broker
 {
-
     public static function getSchema(): Schema
     {
         return Expect::structure([

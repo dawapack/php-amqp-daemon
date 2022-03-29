@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DaWaPack\OutboundAdapters;
 
-use Chassis\Framework\OutboundAdapters\OutboundAbstractAdapter;
+use Chassis\Framework\Adapters\Operations\AbstractOperationsAdapter;
 
-class DaWaPackGetAsync extends OutboundAbstractAdapter
+class DemoOperationGetAsync extends AbstractOperationsAdapter
 {
     /**
      * Use a dedicated channel - passive RPC calls type

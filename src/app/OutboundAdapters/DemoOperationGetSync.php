@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DaWaPack\OutboundAdapters;
 
-use Chassis\Framework\OutboundAdapters\OutboundAbstractAdapter;
+use Chassis\Framework\Adapters\Operations\AbstractOperationsAdapter;
 
-class DaWaPackGetSync extends OutboundAbstractAdapter
+class DemoOperationGetSync extends AbstractOperationsAdapter
 {
     /**
      * Set this property in order to create a sync over async call type
